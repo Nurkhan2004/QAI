@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Камералар — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+  .modal-box{background:#fff;border-radius:18px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.18)}
+  .btn-primary{background:#1a6fc4;color:#fff;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;cursor:pointer;border:none;transition:background 0.18s}
+  .btn-primary:hover{background:#155da0}
+  .btn-ghost{background:#f3f4f6;color:#374151;border-radius:10px;padding:9px 20px;font-weight:500;font-size:14px;border:none;cursor:pointer}
+  .btn-danger{background:#fee2e2;color:#dc2626;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;border:none;cursor:pointer}
+  input,select{border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 13px;font-size:14px;width:100%;outline:none;font-family:inherit;transition:border 0.18s;background:#fff}
+  input:focus,select:focus{border-color:#1a6fc4}
+  .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .cam-card{transition:all 0.2s ease}
+  .cam-card:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<!-- SIDEBAR -->
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div>
+        <span class="nav-label">Бақылау тақтасы</span>
+      </a>
+      <a href="incidents.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">history</span></div>
+        <span class="nav-label">Оқиғалар тарихы</span>
+      </a>
+      <a href="cameras.html" class="nav-item active">
+        <div class="icon-box"><span class="material-symbols-outlined fill">videocam</span></div>
+        <span class="nav-label">Камералар</span>
+      </a>
+      <a href="users.html" data-role="admin" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">group</span></div>
+        <span class="nav-label">Пайдаланушылар</span>
+      </a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">admin_panel_settings</span></div>
+        <span class="nav-label">Әкімші панелі</span>
+      </a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <div class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">settings</span></div><span class="nav-label">Баптаулар</span></div>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <!-- Header -->
+  <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
+    <div>
+      <h1 class="text-gray-800 text-4xl font-black tracking-tight">Камералар</h1>
+      <p class="text-gray-500 text-sm mt-1">Бейнебақылау камераларын басқару</p>
+    </div>
+    <button onclick="openAddModal()" class="flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-white hover:bg-primary/90 text-sm font-semibold transition shadow-sm">
+      <span class="material-symbols-outlined text-base">add</span>Камера қосу
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="camStats"></div>
+
+  <!-- Filters -->
+  <div class="card rounded-xl border border-white/60 shadow-sm mb-5 p-4 flex flex-wrap gap-3 items-center">
+    <div class="relative flex-1 min-w-[180px]">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+      <input id="camSearch" class="pl-10" placeholder="Камера ID, атауы, орны..." oninput="renderCameras()"/>
+    </div>
+    <select id="camStatusFilter" onchange="renderCameras()" style="width:auto;min-width:140px">
+      <option value="">Барлық күй</option>
+      <option value="online">🟢 Онлайн</option>
+      <option value="alert">🔴 Бұзушылық</option>
+      <option value="warning">🟡 Ескерту</option>
+      <option value="offline">⚫ Офлайн</option>
+    </select>
+    <div class="flex gap-2">
+      <button onclick="setView('grid',this)" id="viewGrid" class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary/15 text-primary">
+        <span class="material-symbols-outlined text-xl">grid_view</span>
+      </button>
+      <button onclick="setView('list',this)" id="viewList" class="w-9 h-9 flex items-center justify-center rounded-lg bg-white/70 text-gray-500 hover:bg-gray-100">
+        <span class="material-symbols-outlined text-xl">list</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid View -->
+  <div id="camGridView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+  <!-- List View -->
+  <div id="camListView" class="hidden card rounded-xl border border-white/60 shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-xs text-gray-500 uppercase bg-gray-100/80">
+          <tr>
+            <th class="px-5 py-3">Камера</th>
+            <th class="px-5 py-3">Орны</th>
+            <th class="px-5 py-3">IP Мекенжай</th>
+            <th class="px-5 py-3">Күйі</th>
+            <th class="px-5 py-3">Соңғы оқиға</th>
+            <th class="px-5 py-3 text-right">Әрекет</th>
+          </tr>
+        </thead>
+        <tbody id="camListBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div id="camModal" class="modal-bg hidden">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-5">
+      <h2 class="text-lg font-bold text-gray-800" id="camModalTitle">Камера қосу</h2>
+      <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Камера ID *</label>
+          <input id="cId" placeholder="мыс. CAM-09"/>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Атауы *</label>
+          <input id="cName" placeholder="мыс. Қойма B / Кам-09"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Орны *</label>
+        <input id="cLocation" placeholder="мыс. Қойма B секциясы, 2-қабат"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">IP мекенжайы / RTSP URL</label>
+        <input id="cIp" placeholder="мыс. 192.168.1.101 немесе rtsp://..."/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Күйі</label>
+          <select id="cStatus">
+            <option value="online">🟢 Онлайн</option>
+            <option value="offline">⚫ Офлайн</option>
+            <option value="alert">🔴 Бұзушылық</option>
+            <option value="warning">🟡 Ескерту</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Бұрыш / Зона</label>
+          <input id="cZone" placeholder="мыс. Солтүстік-Батыс"/>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6 justify-end">
+      <button onclick="closeModal()" class="btn-ghost">Болдырмау</button>
+      <button onclick="saveCamera()" class="btn-primary" id="camSaveBtn">Қосу</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW MODAL -->
+<div id="previewModal" class="modal-bg hidden" onclick="if(event.target===this)closePreview()">
+  <div class="modal-box" style="max-width:720px;padding:20px;">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-3">
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-bold text-gray-800" id="previewTitle">Камера бейнесі</h2>
+        <!-- Live stream badge -->
+        <span id="streamBadge" class="hidden items-center gap-1.5 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse inline-block"></span>ТІКЕЛЕЙ
+        </span>
+        <!-- Server offline badge -->
+        <span id="offlineBadge" class="hidden items-center gap-1.5 bg-gray-400 text-white text-xs px-2.5 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-white inline-block"></span>ОФЛАЙН
+        </span>
+      </div>
+      <button onclick="closePreview()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <!-- ═══════════════ LIVE STREAM AREA ═══════════════ -->
+    <div class="relative w-full bg-gray-900 rounded-xl overflow-hidden mb-3" style="aspect-ratio:16/9;">
+
+      <!-- 1) Placeholder (default) -->
+      <div id="feedPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-gray-500 text-5xl">videocam</span>
+        <p class="text-gray-400 text-sm">Камера бейнесі</p>
+      </div>
+
+      <!-- 2) Ноутбук камерасы — MJPEG стрим -->
+      <img id="liveFeed"
+           class="absolute inset-0 w-full h-full object-cover hidden"
+           alt="live"
+           style="display:none;"
+           onerror="onStreamError()"/>
+
+      <!-- 3) Статикалық суреттер (demo camera) -->
+      <div id="staticFeed" class="absolute inset-0 hidden">
+        <img id="staticImg" class="w-full h-full object-cover opacity-90"/>
+      </div>
+
+      <!-- CAM-ID overlay -->
+      <div class="absolute bottom-2 right-2 text-white text-xs bg-black/50 px-2 py-1 rounded" id="previewCamId"></div>
+
+      <!-- Бұзушылық bbox (demo) -->
+      <div id="demoBbox" class="absolute hidden" style="top:20%;left:40%;width:22%;height:55%;">
+        <div class="w-full h-full border-2 border-red-500 rounded animate-pulse"></div>
+        <div class="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap">Каска жоқ</div>
+      </div>
+    </div>
+
+    <!-- ═══ Басқару панелі ═══ -->
+    <div class="flex flex-wrap gap-2 mb-3 items-center">
+
+      <!-- Ноутбук камерасын қосу/өшіру -->
+      <button id="btnToggleLive" onclick="toggleLiveStream()"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-red-500 text-white hover:bg-red-600 transition">
+        <span class="material-symbols-outlined text-base">videocam</span>
+        <span id="liveLabel">Ноутбук камерасы</span>
+      </button>
+
+      <!-- Камера ауыстыру -->
+      <select id="camIndexSelect" onchange="switchCamIndex()"
+        class="text-sm border border-gray-200 rounded-lg px-2 py-1.5" style="width:auto;min-width:130px;">
+        <option value="0">📷 Камера 0 (ноутбук)</option>
+        <option value="1">📷 Камера 1</option>
+        <option value="2">📷 Камера 2</option>
+      </select>
+
+      <!-- Server status -->
+      <div id="serverStatusBox" class="ml-auto flex items-center gap-1.5 text-xs text-gray-400">
+        <span class="w-2 h-2 rounded-full bg-gray-300" id="serverDot"></span>
+        <span id="serverStatusText">Сервер тексерілуде...</span>
+      </div>
+    </div>
+
+    <!-- ═══ YOLO анықтаулары ═══ -->
+    <div id="detectionPanel" class="hidden mb-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+      <p class="text-xs font-semibold text-gray-500 uppercase mb-2">🔍 Анықталған нысандар</p>
+      <div id="detectionList" class="flex flex-wrap gap-2"></div>
+      <p class="text-xs text-gray-400 mt-1.5" id="detectionTime"></p>
+    </div>
+
+    <!-- ═══ Камера ақпараты ═══ -->
+    <div id="previewInfo" class="flex flex-col gap-1.5 text-sm text-gray-600 mb-3"></div>
+
+    <div class="flex gap-3 justify-end">
+      <button onclick="closePreview()" class="btn-ghost">Жабу</button>
+      <a href="dashboard.html" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+        <span class="material-symbols-outlined text-base">open_in_new</span>Dashboard-та ашу
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("operator");
+
+const CAMERAS_KEY = "sv_cameras";
+let editingId = null;
+let currentView = "grid";
+
+const CAM_IMGS = {
+  alert:   "https://lh3.googleusercontent.com/aida-public/AB6AXuCVl4e0E0gyAsuwzY1fRCmazL1BH_T_fOG0xl35J59jSi6xEQMiXqP5c4PDDBUe5fGiJtWyQDqVwh2jqiHmCgj2X_Xl4IYcEdEP2q151Abye5ZPSy3lVrUOexZOmrZv-XUJUOkHvJz6JbcvfXS4z9DIdGwpfuNhL1AkCipZ7zgSfDB6AADEXji0AB1KcdoMhQ292vIWet6-Z1WOsybyzgy1tD9kElgu1OK7SwGA4UfhGJCCBm97rSpZhr4aY7ApJFhBlOU3nNaybWLd",
+  warning: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQe1x1sWlSuaKRC5Gt_9XlnD8mlyvymErID8Lw_2EWBM7wZIVroMI9YdvdKph3TColU1O4riqC_w-jnh1l-HNZ1_QCPq5n6et_YPRaaqn8ppmwdYt5GDhvr66IwliBuAM9T9N_Ggy5gkK-E0W4BK7PGhYZjDrkMzOlaPatvLrqERU235kWPLyypYuHA1Fk7JTmpTtf4z5jMqu4F96jh9AOQARYx29nS0fahwDdgmNo4kRzYZbeA2BfqVovVPKhlzLIaWMWudGcHlAU",
+  online:  "https://lh3.googleusercontent.com/aida-public/AB6AXuBQGsT2nT-lxo03j6ZkSVO52gMVxBwPNP-Oa8ugt0-7ekKn_m1wMWCEFlB1-8-utb79zJCNRTBUCXxcb0I4geRn0KYriyJd5wQ6NtD0zaDjS7KypMtv2NOcFPvUVwetrjgZtvpvE930QNV76-Q25MlZt2gF-3uUOxDbG1taip6syHncdhLJ3VZ6gvus-6dBrTRj-U8FucgmtpZS2Jq1kpLx5PhK8ozMvkA-nQvDiufD5ihVrOcd7Zubq9Xph3QW-TOtjz-6NrgOm-YM",
+  offline: "https://lh3.googleusercontent.com/aida-public/AB6AXuCYPaBbZLqb5TMeKogTjNj8sFHfKHpt2uIeOmz2fA8qrdeKLuf5oynin8QsHd8rdY5-urlpaAdD5I3boOwJQnIuDcGaEOR_3ylNluraNXwBZLHpc0EN87wjBeXd9pnfV3GpFjM3gw8TyFqFmB87Ux43PyLwr5Vx6ZKCR2mfoPdDcJunprBDECFBrpmaprxBpUMkehxQqZv-969Wm2y2VRLQieP7f6zMNsPqPXWlYVmvk5x0x569zo-mulzVIxdXqAhPih3qTEcRkUuu",
+};
+
+const STATUS_CONFIG = {
+  online:  { label:"Онлайн",      color:"bg-green-100 text-green-700",  dot:"bg-green-500",  border:"border-white/60" },
+  alert:   { label:"Бұзушылық",   color:"bg-red-100 text-red-700",     dot:"bg-red-500 animate-pulse",   border:"border-red-400" },
+  warning: { label:"Ескерту",     color:"bg-yellow-100 text-yellow-700",dot:"bg-yellow-500", border:"border-yellow-400" },
+  offline: { label:"Офлайн",      color:"bg-gray-100 text-gray-500",   dot:"bg-gray-400",   border:"border-gray-200" },
+};
+
+function getCameras() {
+  try { return JSON.parse(localStorage.getItem(CAMERAS_KEY)||"[]"); } catch { return []; }
+}
+function saveCameras(arr) { localStorage.setItem(CAMERAS_KEY, JSON.stringify(arr)); }
+
+function renderStats() {
+  const cams = getCameras();
+  const counts = { online:0, alert:0, warning:0, offline:0 };
+  cams.forEach(c => { counts[c.status] = (counts[c.status]||0) + 1; });
+  const card = (icon, bg, label, val) =>
+    `<div class="card rounded-xl p-5 border border-white/60 shadow-sm">
+      <div class="flex justify-between items-center mb-2">
+        <p class="text-gray-500 text-xs font-semibold uppercase">${label}</p>
+        <div class="w-8 h-8 rounded-lg ${bg} flex items-center justify-center">
+          <span class="material-symbols-outlined" style="font-size:18px">${icon}</span>
+        </div>
+      </div>
+      <p class="text-gray-800 text-3xl font-bold">${val}</p>
+    </div>`;
+  document.getElementById("camStats").innerHTML =
+    card("videocam","bg-primary/15 text-primary","Барлық камера", cams.length) +
+    card("check_circle","bg-green-100 text-green-600","Онлайн", counts.online||0) +
+    card("error","bg-red-100 text-red-500","Бұзушылық", counts.alert||0) +
+    card("videocam_off","bg-gray-100 text-gray-500","Офлайн", counts.offline||0);
+}
+
+function getFiltered() {
+  const q   = (document.getElementById("camSearch")?.value||"").toLowerCase();
+  const st  = document.getElementById("camStatusFilter")?.value||"";
+  return getCameras().filter(c => {
+    if (st && c.status !== st) return false;
+    if (q && ![(c.id||""),(c.name||""),(c.location||""),(c.ip||"")].join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderCameras() {
+  const cams = getFiltered();
+  renderGrid(cams);
+  renderList(cams);
+}
+
+function renderGrid(cams) {
+  const grid = document.getElementById("camGridView");
+  if (!cams.length) {
+    grid.innerHTML = `<div class="col-span-4 text-center py-16 text-gray-400">
+      <span class="material-symbols-outlined text-5xl block mb-2">videocam_off</span>Камера табылмады
+    </div>`; return;
+  }
+  grid.innerHTML = cams.map(c => {
+    const cfg = STATUS_CONFIG[c.status] || STATUS_CONFIG.online;
+    const img = CAM_IMGS[c.status] || CAM_IMGS.online;
+    return `
+    <div class="cam-card card rounded-xl border-2 ${cfg.border} shadow-sm overflow-hidden">
+      <div class="relative aspect-video bg-black cursor-pointer" onclick="openPreview('${c.id}')">
+        <img src="${img}" class="w-full h-full object-cover ${c.status==='offline'?'opacity-20':'opacity-80'}"/>
+        ${c.status==='offline'?`<div class="absolute inset-0 flex items-center justify-center">
+          <span class="material-symbols-outlined text-gray-400 text-4xl">videocam_off</span></div>`:''}
+        <div class="absolute top-2 left-2 flex items-center gap-1.5 ${c.status==='offline'?'bg-gray-700':'bg-black/50'} rounded-full px-2.5 py-1">
+          <div class="w-2 h-2 rounded-full ${cfg.dot}"></div>
+          <span class="text-white text-xs font-bold">${cfg.label.toUpperCase()}</span>
+        </div>
+        <div class="absolute top-2 right-2 text-white text-xs bg-black/50 px-2 py-0.5 rounded-full">${c.id}</div>
+        <div class="absolute bottom-2 right-2 flex gap-1">
+          <button onclick="event.stopPropagation();openPreview('${c.id}')" class="w-7 h-7 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70">
+            <span class="material-symbols-outlined" style="font-size:16px">fullscreen</span>
+          </button>
+        </div>
+      </div>
+      <div class="p-3">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="font-semibold text-gray-800 text-sm">${c.name}</p>
+            <p class="text-gray-400 text-xs mt-0.5">${c.location||'—'}</p>
+            ${c.ip?`<p class="text-gray-300 text-xs font-mono mt-0.5">${c.ip}</p>`:''}
+          </div>
+          <div class="flex gap-1 mt-0.5">
+            <button onclick="toggleStatus('${c.id}')" title="Қосу/Өшіру"
+              class="w-7 h-7 flex items-center justify-center rounded-lg ${c.status==='offline'?'bg-green-100 text-green-600 hover:bg-green-200':'bg-gray-100 text-gray-500 hover:bg-gray-200'} transition">
+              <span class="material-symbols-outlined" style="font-size:16px">${c.status==='offline'?'videocam':'videocam_off'}</span>
+            </button>
+            <button onclick="openEditModal('${c.id}')" class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 transition">
+              <span class="material-symbols-outlined" style="font-size:16px">edit</span>
+            </button>
+            <button onclick="confirmDelete('${c.id}')" class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 text-red-400 hover:bg-red-50 transition">
+              <span class="material-symbols-outlined" style="font-size:16px">delete</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+          <span class="text-xs text-gray-400">Соңғы: ${c.lastIncident||'—'}</span>
+          <span class="px-2 py-0.5 rounded-full text-xs ${cfg.color} font-medium">${cfg.label}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderList(cams) {
+  const tbody = document.getElementById("camListBody");
+  if (!cams.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-gray-400">Камера табылмады</td></tr>`; return;
+  }
+  tbody.innerHTML = cams.map(c => {
+    const cfg = STATUS_CONFIG[c.status]||STATUS_CONFIG.online;
+    return `<tr class="border-b border-gray-100 hover:bg-white/60 transition">
+      <td class="px-5 py-3.5">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-gray-400" style="font-size:18px">${c.status==='offline'?'videocam_off':'videocam'}</span>
+          </div>
+          <div><p class="font-semibold text-gray-800 text-sm">${c.name}</p>
+            <p class="text-gray-400 text-xs font-mono">${c.id}</p></div>
+        </div>
+      </td>
+      <td class="px-5 py-3.5 text-gray-600 text-sm">${c.location||'—'}</td>
+      <td class="px-5 py-3.5 text-gray-400 text-xs font-mono">${c.ip||'—'}</td>
+      <td class="px-5 py-3.5"><span class="flex items-center gap-1.5"><span class="status-dot ${cfg.dot}"></span><span class="${cfg.color} px-2 py-0.5 rounded-full text-xs font-medium">${cfg.label}</span></span></td>
+      <td class="px-5 py-3.5 text-gray-400 text-xs">${c.lastIncident||'—'}</td>
+      <td class="px-5 py-3.5 text-right">
+        <button onclick="toggleStatus('${c.id}')" class="text-gray-400 hover:text-primary mr-2 transition" title="Қосу/Өшіру">
+          <span class="material-symbols-outlined" style="font-size:18px">${c.status==='offline'?'videocam':'videocam_off'}</span>
+        </button>
+        <button onclick="openEditModal('${c.id}')" class="text-gray-400 hover:text-primary mr-2 transition">
+          <span class="material-symbols-outlined" style="font-size:18px">edit</span>
+        </button>
+        <button onclick="confirmDelete('${c.id}')" class="text-gray-400 hover:text-red-500 transition">
+          <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+        </button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function setView(v, btn) {
+  currentView = v;
+  document.getElementById("camGridView").classList.toggle("hidden", v!=="grid");
+  document.getElementById("camListView").classList.toggle("hidden", v!=="list");
+  document.getElementById("viewGrid").className = `w-9 h-9 flex items-center justify-center rounded-lg transition ${v==='grid'?'bg-primary/15 text-primary':'bg-white/70 text-gray-500 hover:bg-gray-100'}`;
+  document.getElementById("viewList").className = `w-9 h-9 flex items-center justify-center rounded-lg transition ${v==='list'?'bg-primary/15 text-primary':'bg-white/70 text-gray-500 hover:bg-gray-100'}`;
+}
+
+// ── CRUD ─────────────────────────────────────
+function openAddModal() {
+  editingId = null;
+  document.getElementById("camModalTitle").textContent = "Камера қосу";
+  document.getElementById("camSaveBtn").textContent = "Қосу";
+  ["cId","cName","cLocation","cIp","cZone"].forEach(id => document.getElementById(id).value="");
+  document.getElementById("cStatus").value = "online";
+  document.getElementById("cId").disabled = false;
+  document.getElementById("camModal").classList.remove("hidden");
+}
+
+function openEditModal(id) {
+  const c = getCameras().find(x => x.id===id);
+  if (!c) return;
+  editingId = id;
+  document.getElementById("camModalTitle").textContent = "Камераны өңдеу";
+  document.getElementById("camSaveBtn").textContent = "Сақтау";
+  document.getElementById("cId").value = c.id||"";
+  document.getElementById("cName").value = c.name||"";
+  document.getElementById("cLocation").value = c.location||"";
+  document.getElementById("cIp").value = c.ip||"";
+  document.getElementById("cZone").value = c.zone||"";
+  document.getElementById("cStatus").value = c.status||"online";
+  document.getElementById("cId").disabled = true;
+  document.getElementById("camModal").classList.remove("hidden");
+}
+
+function closeModal() { document.getElementById("camModal").classList.add("hidden"); }
+
+function saveCamera() {
+  const id   = document.getElementById("cId").value.trim();
+  const name = document.getElementById("cName").value.trim();
+  const loc  = document.getElementById("cLocation").value.trim();
+  if (!name||!loc) { window.SafetyVision.toast("Атауы мен орнын енгізіңіз!", "warning"); return; }
+
+  const arr = getCameras();
+  const data = {
+    id: id || ("CAM-" + String(arr.length+1).padStart(2,"0")),
+    name, location: loc,
+    ip:   document.getElementById("cIp").value.trim(),
+    zone: document.getElementById("cZone").value.trim(),
+    status: document.getElementById("cStatus").value,
+    lastIncident: "—",
+  };
+
+  if (editingId) {
+    const idx = arr.findIndex(x=>x.id===editingId);
+    if (idx>=0) arr[idx] = {...arr[idx],...data, id:editingId};
+    window.SafetyVision.toast("Камера жаңартылды ✓","success");
+  } else {
+    if (arr.find(x=>x.id===data.id)) { window.SafetyVision.toast("Бұл ID бос емес!","error"); return; }
+    arr.push(data);
+    window.SafetyVision.toast("Камера қосылды ✓","success");
+  }
+  saveCameras(arr);
+  closeModal();
+  renderStats();
+  renderCameras();
+}
+
+async function toggleStatus(id) {
+  const arr = getCameras();
+  const c = arr.find(x=>x.id===id);
+  if (!c) return;
+
+  const goingOffline = c.status !== "offline";
+
+  if (goingOffline) {
+    // Камераны өшіру — API-ға хабарлаймыз
+    try {
+      await fetch(BACKEND + "/api/cameras/remove", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id}),
+        signal: AbortSignal.timeout(2000)
+      });
+    } catch(e) { /* сервер офлайн болса localStorage-та ғана өзгереді */ }
+    c.status = "offline";
+    // Егер осы камера live болса — стримді тоқтатамыз
+    if (liveActive && activeCamId === id) stopLiveStream();
+  } else {
+    // Камераны қосу — API-ға хабарлаймыз
+    try {
+      await fetch(BACKEND + "/api/cameras/add", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id, source: c.ip || "0", name: c.name}),
+        signal: AbortSignal.timeout(2000)
+      });
+    } catch(e) { /* офлайн */ }
+    c.status = "online";
+  }
+
+  saveCameras(arr);
+  window.SafetyVision.toast(
+    `${c.name}: ${goingOffline ? "Өшірілді" : "Іске қосылды"}`,
+    goingOffline ? "info" : "success"
+  );
+  renderStats();
+  renderCameras();
+}
+
+function confirmDelete(id) {
+  const c = getCameras().find(x=>x.id===id);
+  if (!confirm(`"${c?.name||id}" камерасын жоясыз ба?`)) return;
+  saveCameras(getCameras().filter(x=>x.id!==id));
+  window.SafetyVision.toast("Камера жойылды","info");
+  renderStats();
+  renderCameras();
+}
+
+// ── Live Stream ──────────────────────────────
+// ── FastAPI backend: http://localhost:8000 ──────────────────
+const BACKEND     = "http://localhost:8000";
+let   activeCamId = "CAM-01";
+
+const STREAM_URL  = () => BACKEND + "/video/" + activeCamId;
+const STATUS_URL  = BACKEND + "/api/cameras";
+const ADD_CAM_URL = BACKEND + "/api/cameras/add";
+
+let liveActive       = false;
+let serverOnline     = false;
+let statusInterval   = null;
+let detectionInterval= null;
+
+// Сервер тексеру
+async function checkServer() {
+  try {
+    const r = await fetch(STATUS_URL, { signal: AbortSignal.timeout(2000) });
+    const d = await r.json();
+    serverOnline = true;
+    document.getElementById("serverDot").className         = "w-2 h-2 rounded-full bg-green-500";
+    document.getElementById("serverStatusText").textContent = "Server online ✅";
+    return d;
+  } catch {
+    serverOnline = false;
+    document.getElementById("serverDot").className         = "w-2 h-2 rounded-full bg-red-400";
+    document.getElementById("serverStatusText").textContent = "Server offline — run: python main.py";
+    return null;
+  }
+}
+
+async function fetchDetections() {
+  if (!liveActive || !serverOnline) return;
+  try {
+    const r = await fetch(BACKEND + "/api/incidents?limit=5",
+                          { signal: AbortSignal.timeout(1500) });
+    const d = await r.json();
+    const panel = document.getElementById("detectionPanel");
+    const list  = document.getElementById("detectionList");
+    const recent = (d.incidents || []).slice(0, 5);
+    if (recent.length > 0) {
+      panel.classList.remove("hidden");
+      list.innerHTML = recent.map(inc => {
+        const isAlert = inc.severity === "high";
+        return `<span class="px-2 py-1 rounded-full text-xs font-semibold ${isAlert ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}">
+          ${inc.type}  ${inc.confidence}%
+        </span>`;
+      }).join("");
+      document.getElementById("detectionTime").textContent =
+        `Last detection: ${recent[0]?.date || ""}`;
+    } else {
+      panel.classList.add("hidden");
+    }
+  } catch { /* silent */ }
+}
+
+function startLiveStream() {
+  streamRetryCount = 0;
+  clearTimeout(streamRetryTimer);
+
+  const img = document.getElementById("liveFeed");
+
+  // onerror орнына — жаңа Image() арқылы тексеріп, содан src береміз
+  // Бұл браузердің stream үзілгенде бетті жабуын болдырмайды
+  img.onload  = null;
+  img.onerror = function() { onStreamError(); };
+  img.src = STREAM_URL() + "?t=" + Date.now();
+  img.style.display = "block";
+  img.classList.remove("hidden");
+
+  document.getElementById("feedPlaceholder").classList.add("hidden");
+  document.getElementById("staticFeed").classList.add("hidden");
+  document.getElementById("streamBadge").classList.remove("hidden");
+  document.getElementById("streamBadge").style.display = "flex";
+  document.getElementById("offlineBadge").style.display = "none";
+  document.getElementById("btnToggleLive").classList.replace("bg-red-500","bg-gray-500");
+  document.getElementById("liveLabel").textContent = "Стримді тоқтату";
+  liveActive = true;
+  detectionInterval = setInterval(fetchDetections, 1000);
+
+  // Браузер stream-ді 30 секундта бір тексереді — үзілсе қайта қосады
+  clearInterval(streamHealthTimer);
+  streamHealthTimer = setInterval(() => {
+    if (!liveActive) return;
+    // img.naturalWidth === 0 болса — stream тоқтап қалған
+    if (img.naturalWidth === 0 && img.style.display !== "none") {
+      console.log("Stream health check: reconnecting...");
+      img.src = STREAM_URL() + "?t=" + Date.now();
+    }
+  }, 5000);
+}
+
+function stopLiveStream() {
+  clearInterval(streamHealthTimer);
+  const img = document.getElementById("liveFeed");
+  img.onerror = null;
+  img.src = "";
+  img.style.display = "none";
+  document.getElementById("btnToggleLive").classList.replace("bg-gray-500","bg-red-500");
+  document.getElementById("liveLabel").textContent = "Ноутбук камерасы";
+  document.getElementById("detectionPanel").classList.add("hidden");
+  liveActive = false;
+  clearInterval(detectionInterval);
+}
+
+async function toggleLiveStream() {
+  if (liveActive) {
+    stopLiveStream();
+    return;
+  }
+  if (!serverOnline) {
+    window.SafetyVision.toast("Сервер офлайн — python app.py іске қосыңыз!", "warning");
+    return;
+  }
+
+  // Алдымен API арқылы камераны backend-те қосамыз
+  const camSource = document.getElementById("camIndexSelect")?.value ?? "0";
+  try {
+    const res = await fetch(BACKEND + "/api/cameras/add", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ id: activeCamId, source: camSource, name: "Webcam" }),
+      signal: AbortSignal.timeout(4000)
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      window.SafetyVision.toast("Камера ашылмады — басқа бағдарлама қолданып жатыр?", "error");
+      return;
+    }
+    window.SafetyVision.toast("Камера қосылды ✓", "success");
+  } catch(e) {
+    window.SafetyVision.toast("Сервермен байланыс жоқ", "error");
+    return;
+  }
+
+  // Камера сәтті қосылды — stream бастаймыз
+  startLiveStream();
+}
+
+let streamRetryTimer  = null;
+let streamRetryCount  = 0;
+let streamHealthTimer = null;
+
+function onStreamError() {
+  // Stream үзілді — бірден тоқтатпай, қайта қосуға тырысамыз
+  const img = document.getElementById("liveFeed");
+  streamRetryCount++;
+
+  if (streamRetryCount <= 10) {
+    // Әр 2 секунд сайын қайта қосу
+    clearTimeout(streamRetryTimer);
+    streamRetryTimer = setTimeout(() => {
+      if (liveActive) {
+        img.src = STREAM_URL() + "?t=" + Date.now();
+      }
+    }, 2000);
+  } else {
+    // 10 рет сәтсіз болса — шынымен тоқтату
+    stopLiveStream();
+    streamRetryCount = 0;
+    document.getElementById("offlineBadge").style.display = "flex";
+    document.getElementById("feedPlaceholder").classList.remove("hidden");
+    window.SafetyVision.toast("Стрим үзілді — сервер тексеріңіз", "error");
+  }
+}
+
+async function switchCamIndex() {
+  const val = document.getElementById("camIndexSelect").value;
+  activeCamId = val.startsWith("CAM") ? val : "CAM-0" + (parseInt(val)+1);
+  try {
+    // Tell backend to open this camera index
+    await fetch(ADD_CAM_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ id: activeCamId, source: val, name: "Webcam" })
+    });
+    window.SafetyVision.toast(`Camera ${activeCamId} switched ✓`, "success");
+    if (liveActive) { stopLiveStream(); startLiveStream(); }
+  } catch {
+    window.SafetyVision.toast("Server offline", "error");
+  }
+}
+
+// ── Preview ──────────────────────────────────
+function openPreview(id) {
+  const c = getCameras().find(x=>x.id===id);
+  if (!c) return;
+  activeCamId = id;   // tell stream which camera to show
+  const cfg = STATUS_CONFIG[c.status]||STATUS_CONFIG.online;
+  const img = CAM_IMGS[c.status]||CAM_IMGS.online;
+
+  document.getElementById("previewTitle").textContent   = c.name;
+  document.getElementById("previewCamId").textContent   = c.id;
+  document.getElementById("demoBbox").classList.add("hidden");
+
+  // Ақпарат
+  document.getElementById("previewInfo").innerHTML = [
+    `<div class="flex gap-3"><span class="text-gray-400 w-28">Орны:</span><span class="font-medium">${c.location||'—'}</span></div>`,
+    `<div class="flex gap-3"><span class="text-gray-400 w-28">IP / URL:</span><span class="font-mono text-sm">${c.ip||'—'}</span></div>`,
+    `<div class="flex gap-3"><span class="text-gray-400 w-28">Күйі:</span><span class="px-2 py-0.5 rounded-full text-xs ${cfg.color} font-medium">${cfg.label}</span></div>`,
+    `<div class="flex gap-3"><span class="text-gray-400 w-28">Соңғы оқиға:</span><span>${c.lastIncident||'—'}</span></div>`,
+  ].join("");
+
+  if (c.status === "offline") {
+    // Офлайн — статикалық, ОФЛАЙН badge
+    document.getElementById("feedPlaceholder").classList.remove("hidden");
+    document.getElementById("staticFeed").classList.add("hidden");
+    document.getElementById("liveFeed").style.display = "none";
+    document.getElementById("streamBadge").style.display = "none";
+    document.getElementById("offlineBadge").style.display = "flex";
+  } else {
+    // Demo статикалық сурет
+    document.getElementById("staticImg").src = img;
+    document.getElementById("staticFeed").classList.remove("hidden");
+    document.getElementById("feedPlaceholder").classList.add("hidden");
+    if (c.status==="alert")   document.getElementById("demoBbox").classList.remove("hidden");
+  }
+
+  document.getElementById("previewModal").classList.remove("hidden");
+
+  // ТІКЕЛЕЙ badge — modal ашылғанда бірден көрінеді
+  document.getElementById("streamBadge").classList.remove("hidden");
+  document.getElementById("streamBadge").style.display = "flex";
+  document.getElementById("offlineBadge").style.display = "none";
+
+  // Сервер тексеру
+  checkServer();
+  statusInterval = setInterval(checkServer, 3000);
+}
+
+function closePreview() {
+  stopLiveStream();
+  clearTimeout(streamRetryTimer);
+  streamRetryCount = 0;
+  clearInterval(statusInterval);
+  clearInterval(detectionInterval);
+  document.getElementById("previewModal").classList.add("hidden");
+  document.getElementById("detectionPanel").classList.add("hidden");
+  document.getElementById("streamBadge").style.display = "none";
+  document.getElementById("offlineBadge").style.display = "none";
+  document.getElementById("staticFeed").classList.add("hidden");
+  document.getElementById("feedPlaceholder").classList.remove("hidden");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderStats();
+  renderCameras();
+});
+
+// ESC батырмасымен жабу
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closePreview();
+});
+</script>
+</body>
+</html>

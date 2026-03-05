@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Әкімші панелі — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  .bar{background:#1a6fc4;border-radius:4px 4px 0 0;transition:height 0.6s cubic-bezier(.4,0,.2,1);min-width:24px;cursor:pointer}
+  .bar:hover{background:#155da0}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div><span class="nav-label">Бақылау тақтасы</span></a>
+      <a href="incidents.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">history</span></div><span class="nav-label">Оқиғалар тарихы</span></a>
+      <a href="cameras.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">videocam</span></div><span class="nav-label">Камералар</span></a>
+      <a href="users.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">group</span></div><span class="nav-label">Пайдаланушылар</span></a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item active"><div class="icon-box"><span class="material-symbols-outlined fill">admin_panel_settings</span></div><span class="nav-label">Әкімші панелі</span></a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <div class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">settings</span></div><span class="nav-label">Баптаулар</span></div>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <div class="flex flex-wrap justify-between gap-3 mb-6">
+    <div>
+      <p class="text-gray-800 text-4xl font-black leading-tight">Әкімші панелі</p>
+      <p class="text-gray-500 text-sm mt-1">Жүйені басқару және аналитика</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="users.html" class="px-4 h-10 flex items-center gap-1.5 rounded-lg bg-primary/15 text-primary hover:bg-primary/25 font-medium transition text-sm">
+        <span class="material-symbols-outlined text-base">group</span>Пайдаланушылар
+      </a>
+      <button onclick="exportCSV()" class="px-4 h-10 flex items-center gap-1.5 rounded-lg bg-white/60 text-gray-700 hover:bg-white/80 font-medium transition text-sm border border-gray-200">
+        <span class="material-symbols-outlined text-base">download</span>CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="card rounded-xl p-5 border border-white/60 shadow-sm">
+      <div class="flex items-center justify-between mb-3"><p class="text-gray-500 text-sm font-medium">Пайдаланушылар</p><div class="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-lg">group</span></div></div>
+      <p class="text-gray-800 text-3xl font-bold" id="statUsers">—</p>
+      <p class="text-gray-400 text-xs mt-1" id="statUsersDetail">—</p>
+    </div>
+    <div class="card rounded-xl p-5 border border-white/60 shadow-sm">
+      <div class="flex items-center justify-between mb-3"><p class="text-gray-500 text-sm font-medium">Ашық оқиғалар</p><div class="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center"><span class="material-symbols-outlined text-red-500 text-lg">warning</span></div></div>
+      <p class="text-gray-800 text-3xl font-bold" id="statOpen">—</p>
+      <p class="text-gray-400 text-xs mt-1">Шешімді қажет</p>
+    </div>
+    <div class="card rounded-xl p-5 border border-white/60 shadow-sm">
+      <div class="flex items-center justify-between mb-3"><p class="text-gray-500 text-sm font-medium">Соңғы 24 сағ</p><div class="w-9 h-9 rounded-lg bg-yellow-100 flex items-center justify-center"><span class="material-symbols-outlined text-yellow-500 text-lg">schedule</span></div></div>
+      <p class="text-gray-800 text-3xl font-bold" id="stat24h">—</p>
+      <p class="text-gray-400 text-xs mt-1">Оқиға саны</p>
+    </div>
+    <div class="card rounded-xl p-5 border border-white/60 shadow-sm">
+      <div class="flex items-center justify-between mb-3"><p class="text-gray-500 text-sm font-medium">Қауіпсіздік индексі</p><div class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center"><span class="material-symbols-outlined text-green-500 text-lg">verified</span></div></div>
+      <p class="text-gray-800 text-3xl font-bold" id="statScore">—</p>
+      <p class="text-gray-400 text-xs mt-1" id="statScoreLabel">—</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- Bar chart -->
+    <div class="lg:col-span-2 card rounded-xl border border-white/60 shadow-sm p-6">
+      <div class="flex justify-between items-center mb-4">
+        <div><h3 class="text-gray-800 text-lg font-bold">Күнделікті оқиға тренді</h3><p class="text-gray-400 text-sm">Соңғы 7 күн</p></div>
+        <span class="text-2xl font-bold text-gray-800" id="chartTotal">—</span>
+      </div>
+      <div class="flex items-end gap-2 h-40" id="barChart"></div>
+      <div class="flex justify-between mt-2" id="barLabels"></div>
+    </div>
+    <!-- Type breakdown -->
+    <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+      <h3 class="text-gray-800 text-lg font-bold mb-4">Бұзушылық түрлері</h3>
+      <div class="flex flex-col gap-3" id="typeBreakdown"></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent table -->
+    <div class="lg:col-span-2 card rounded-xl border border-white/60 shadow-sm">
+      <div class="p-5 border-b border-gray-200/60 flex justify-between items-center">
+        <h3 class="text-gray-800 text-lg font-bold">Соңғы оқиғалар</h3>
+        <a href="incidents.html" class="text-primary text-sm hover:underline">Барлығын көру →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+          <thead class="text-xs uppercase bg-gray-100/80 text-gray-500">
+            <tr><th class="px-4 py-3">ID</th><th class="px-4 py-3">Түрі</th><th class="px-4 py-3">Орны</th><th class="px-4 py-3">Маңыздылығы</th><th class="px-4 py-3">Мәртебе</th></tr>
+          </thead>
+          <tbody id="recentIncidents"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card rounded-xl border border-white/60 shadow-sm">
+      <div class="p-5 border-b border-gray-200/60"><h3 class="text-gray-800 text-lg font-bold">Жедел әрекеттер</h3></div>
+      <div class="p-5 flex flex-col gap-3">
+        <a href="users.html" class="w-full px-4 py-3 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 font-medium text-sm flex items-center justify-center gap-2 transition">
+          <span class="material-symbols-outlined text-base">person_add</span>Пайдаланушы қосу
+        </a>
+        <a href="cameras.html" class="w-full px-4 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm flex items-center justify-center gap-2 transition">
+          <span class="material-symbols-outlined text-base">videocam</span>Камера басқару
+        </a>
+        <a href="incidents.html" class="w-full px-4 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm flex items-center justify-center gap-2 transition">
+          <span class="material-symbols-outlined text-base">history</span>Оқиғаларды басқару
+        </a>
+        <button onclick="exportCSV()" class="w-full px-4 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm flex items-center justify-center gap-2 transition">
+          <span class="material-symbols-outlined text-base">download</span>CSV экспорт
+        </button>
+        <button onclick="resetDemo()" class="w-full px-4 py-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 font-medium text-sm flex items-center justify-center gap-2 transition">
+          <span class="material-symbols-outlined text-base">refresh</span>Demo-ны қайта орнату
+        </button>
+      </div>
+      <div class="px-5 pb-5">
+        <div class="bg-gray-50 rounded-xl p-4 text-xs text-gray-600">
+          <p class="font-semibold text-gray-500 uppercase text-xs mb-3">Жүйе ақпараты</p>
+          <div class="flex flex-col gap-1.5">
+            <div class="flex justify-between"><span>Камералар:</span><span class="font-semibold" id="sysCamera">—</span></div>
+            <div class="flex justify-between"><span>Барлық оқиға:</span><span class="font-semibold" id="sysTotal">—</span></div>
+            <div class="flex justify-between"><span>Шешілген:</span><span class="font-semibold text-green-600" id="sysResolved">—</span></div>
+            <div class="flex justify-between"><span>Ашық:</span><span class="font-semibold text-red-500" id="sysOpen2">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("admin");
+
+const $ = id => document.getElementById(id);
+const set = (id,v) => { const e=$(id); if(e) e.textContent=v; };
+
+function renderAll() {
+  const incidents = window.SafetyVision.incidents.getAll();
+  const users     = window.SafetyVision.users.getAll();
+  const cameras   = JSON.parse(localStorage.getItem("sv_cameras")||"[]");
+  const now       = Date.now();
+  const day       = 86400000;
+  const open      = incidents.filter(x=>(x.status||"").toLowerCase()!=="resolved");
+  const last24    = incidents.filter(x=>(now-new Date(x.createdAt||0).getTime())<=day);
+  const score     = Math.max(0,Math.min(100,100-open.length*5));
+  const admins    = users.filter(u=>u.role==="admin").length;
+  const ops       = users.filter(u=>u.role==="operator").length;
+
+  set("statUsers", users.length);
+  set("statUsersDetail", `${admins} Admin / ${ops} Operator`);
+  set("statOpen",  open.length);
+  set("stat24h",   last24.length);
+  set("statScore", score+"%");
+  set("statScoreLabel", score>=80?"Жақсы деңгей":score>=60?"Орташа":"Назар аудар!");
+  set("sysCamera",   cameras.length);
+  set("sysTotal",    incidents.length);
+  set("sysResolved", incidents.filter(x=>(x.status||"").toLowerCase()==="resolved").length);
+  set("sysOpen2",    open.length);
+
+  renderBarChart(incidents, now, day);
+  renderTypeBreakdown(incidents);
+  renderTable(incidents);
+}
+
+function renderBarChart(incidents, now, day) {
+  const days = ["Жк","Дс","Сс","Ср","Бс","Жм","Сб"];
+  const data = [];
+  for (let i=6;i>=0;i--) {
+    const s=now-(i+1)*day, e=now-i*day;
+    const cnt=incidents.filter(x=>{const t=new Date(x.createdAt||0).getTime();return t>=s&&t<e;}).length;
+    data.push({label:days[new Date(now-i*day).getDay()],cnt});
+  }
+  const max=Math.max(...data.map(d=>d.cnt),1);
+  set("chartTotal", incidents.filter(x=>(now-new Date(x.createdAt||0).getTime())<=7*day).length+" оқиға");
+  $("barChart").innerHTML=data.map(d=>`
+    <div class="flex-1 flex flex-col items-center justify-end gap-1">
+      <span class="text-xs text-gray-500 font-medium">${d.cnt||""}</span>
+      <div class="bar w-full" style="height:${Math.max(Math.round(d.cnt/max*140),4)}px" title="${d.label}: ${d.cnt}"></div>
+    </div>`).join("");
+  $("barLabels").innerHTML=data.map(d=>`<span class="text-xs text-gray-400 font-semibold flex-1 text-center">${d.label}</span>`).join("");
+}
+
+function renderTypeBreakdown(incidents) {
+  const counts={};
+  incidents.forEach(x=>{counts[x.type||"Басқа"]=(counts[x.type||"Басқа"]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const total=incidents.length||1;
+  const colors=["bg-primary","bg-red-500","bg-yellow-500","bg-green-500","bg-gray-400"];
+  $("typeBreakdown").innerHTML=sorted.map(([type,cnt],i)=>{
+    const pct=Math.round(cnt/total*100);
+    return `<div>
+      <div class="flex justify-between mb-1">
+        <span class="text-sm text-gray-700 truncate" style="max-width:170px">${type}</span>
+        <span class="text-sm font-bold text-gray-400">${pct}%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="${colors[i]||colors[4]} h-2 rounded-full" style="width:${pct}%"></div>
+      </div>
+    </div>`;
+  }).join("")||`<p class="text-gray-400 text-sm text-center py-4">Деректер жоқ</p>`;
+}
+
+function renderTable(incidents) {
+  const sev=s=>s==="high"?`<span class="px-2 py-0.5 rounded-full text-xs bg-red-100 text-red-600">Жоғары</span>`:s==="low"?`<span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-500">Төмен</span>`:`<span class="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-600">Орташа</span>`;
+  const sts=s=>s==="Resolved"?`<span class="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-600">Шешілді</span>`:s==="Investigating"?`<span class="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-600">Тексерілуде</span>`:`<span class="px-2 py-0.5 rounded-full text-xs bg-red-50 text-red-500">Ашық</span>`;
+  $("recentIncidents").innerHTML=incidents.slice(0,6).map(it=>
+    `<tr class="border-b border-gray-100 hover:bg-white/60">
+      <td class="px-4 py-3 font-semibold text-gray-800 text-sm">#${it.id}</td>
+      <td class="px-4 py-3 text-gray-600 text-sm">${it.type||"—"}</td>
+      <td class="px-4 py-3 text-gray-400 text-xs">${it.location||"—"}</td>
+      <td class="px-4 py-3">${sev(it.severity)}</td>
+      <td class="px-4 py-3">${sts(it.status)}</td>
+    </tr>`).join("")||`<tr><td colspan="5" class="text-center py-8 text-gray-400">Оқиға жоқ</td></tr>`;
+}
+
+function exportCSV() {
+  const all=window.SafetyVision.incidents.getAll();
+  const h=["id","date","type","severity","location","status","note"];
+  const csv=h.join(",")+"\n"+all.map(it=>h.map(k=>`"${(it[k]||"").toString().replaceAll('"','""')}"`).join(",")).join("\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}));
+  a.download="incidents_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+  window.SafetyVision.toast("CSV жүктелуде...","success");
+}
+
+function resetDemo() {
+  if(!confirm("Барлық деректерді тазалап demo-ны қайта орнатасыз ба?")) return;
+  ["sv_users","sv_incidents","sv_cameras"].forEach(k=>localStorage.removeItem(k));
+  window.SafetyVision.toast("Деректер тазаланды, жаңарады...","info");
+  setTimeout(()=>location.reload(),1500);
+}
+
+document.addEventListener("DOMContentLoaded", renderAll);
+</script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Пайдаланушылар — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+  .modal-box{background:#fff;border-radius:18px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.18)}
+  .btn-primary{background:#1a6fc4;color:#fff;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;cursor:pointer;border:none;transition:background 0.18s}
+  .btn-primary:hover{background:#155da0}
+  .btn-ghost{background:#f3f4f6;color:#374151;border-radius:10px;padding:9px 20px;font-weight:500;font-size:14px;border:none;cursor:pointer;transition:background 0.18s}
+  .btn-ghost:hover{background:#e5e7eb}
+  .btn-danger{background:#fee2e2;color:#dc2626;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;border:none;cursor:pointer}
+  input,select{border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 13px;font-size:14px;width:100%;outline:none;font-family:inherit;transition:border 0.18s;background:#fff}
+  input:focus,select:focus{border-color:#1a6fc4}
+  .user-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<!-- SIDEBAR -->
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div>
+        <span class="nav-label">Бақылау тақтасы</span>
+      </a>
+      <a href="incidents.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">history</span></div>
+        <span class="nav-label">Оқиғалар тарихы</span>
+      </a>
+      <a href="cameras.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">videocam</span></div>
+        <span class="nav-label">Камералар</span>
+      </a>
+      <a href="users.html" data-role="admin" class="nav-item active">
+        <div class="icon-box"><span class="material-symbols-outlined fill">group</span></div>
+        <span class="nav-label">Пайдаланушылар</span>
+      </a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">admin_panel_settings</span></div>
+        <span class="nav-label">Әкімші панелі</span>
+      </a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <div class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">settings</span></div><span class="nav-label">Баптаулар</span></div>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+    <div>
+      <h1 class="text-gray-800 text-4xl font-black tracking-tight">Пайдаланушылар</h1>
+      <p class="text-gray-500 text-sm mt-1">Жүйе пайдаланушыларын басқару</p>
+    </div>
+    <button onclick="openAddModal()" class="flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-white hover:bg-primary/90 text-sm font-medium transition shadow-sm">
+      <span class="material-symbols-outlined text-base">person_add</span>Пайдаланушы қосу
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-4 mb-6" id="userStats"></div>
+
+  <!-- Search -->
+  <div class="card rounded-xl border border-white/60 shadow-sm mb-4 p-4 flex gap-3 items-center flex-wrap">
+    <div class="relative flex-1 min-w-[200px]">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+      <input id="userSearch" class="pl-10" placeholder="Аты, логин, email..." oninput="renderUsers()"/>
+    </div>
+    <select id="roleFilter" onchange="renderUsers()" style="width:auto;min-width:140px">
+      <option value="">Барлық рөлдер</option>
+      <option value="admin">Admin</option>
+      <option value="operator">Operator</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div class="card rounded-xl border border-white/60 shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-xs text-gray-500 uppercase bg-gray-100/80">
+          <tr>
+            <th class="px-5 py-3">Пайдаланушы</th>
+            <th class="px-5 py-3">Логин</th>
+            <th class="px-5 py-3">Email</th>
+            <th class="px-5 py-3">Рөлі</th>
+            <th class="px-5 py-3">Тіркелген</th>
+            <th class="px-5 py-3 text-right">Әрекет</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
+    </div>
+    <div class="p-5 border-t border-gray-100 text-sm text-gray-500" id="userCount"></div>
+  </div>
+</main>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div id="userModal" class="modal-bg hidden">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-5">
+      <h2 class="text-lg font-bold text-gray-800" id="userModalTitle">Пайдаланушы қосу</h2>
+      <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-4">
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Толық аты *</label>
+        <input id="uFullName" placeholder="мыс. Алмас Беков"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Логин (username) *</label>
+        <input id="uUsername" placeholder="мыс. almas_b"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Email</label>
+        <input id="uEmail" type="email" placeholder="email@safety.kz"/>
+      </div>
+      <div id="passwordField">
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Құпия сөз *</label>
+        <input id="uPassword" type="password" placeholder="Кемінде 4 таңба"/>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Рөлі</label>
+        <select id="uRole">
+          <option value="operator">Operator — қауіпсіздік операторы</option>
+          <option value="admin">Admin — жүйе әкімшісі</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6 justify-end">
+      <button onclick="closeModal()" class="btn-ghost">Болдырмау</button>
+      <button onclick="saveUser()" class="btn-primary" id="userSaveBtn">Қосу</button>
+    </div>
+  </div>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("admin");
+
+let editingUserId = null;
+const COLORS = ["bg-blue-500","bg-purple-500","bg-green-500","bg-orange-500","bg-pink-500","bg-teal-500"];
+const initials = name => name ? name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2) : "?";
+const colorFor  = username => COLORS[(username||"").charCodeAt(0) % COLORS.length];
+
+function renderStats() {
+  const all = window.SafetyVision.users.getAll();
+  const admins = all.filter(u => u.role === "admin").length;
+  const ops    = all.filter(u => u.role === "operator").length;
+  const row = (icon, color, label, val) =>
+    `<div class="card rounded-xl p-5 border border-white/60 shadow-sm flex flex-col gap-1">
+      <div class="flex justify-between items-center mb-1">
+        <p class="text-gray-500 text-xs font-semibold uppercase">${label}</p>
+        <div class="w-8 h-8 rounded-lg ${color} flex items-center justify-center">
+          <span class="material-symbols-outlined" style="font-size:18px">${icon}</span>
+        </div>
+      </div>
+      <p class="text-gray-800 text-3xl font-bold">${val}</p>
+    </div>`;
+  document.getElementById("userStats").innerHTML =
+    row("group","bg-primary/15 text-primary","Барлығы", all.length) +
+    row("admin_panel_settings","bg-purple-100 text-purple-600","Admin", admins) +
+    row("person","bg-green-100 text-green-600","Operator", ops);
+}
+
+function renderUsers() {
+  const q    = (document.getElementById("userSearch")?.value||"").toLowerCase();
+  const role = document.getElementById("roleFilter")?.value||"";
+  const all  = window.SafetyVision.users.getAll().filter(u => {
+    if (role && u.role !== role) return false;
+    if (q && ![(u.fullName||""),(u.username||""),(u.email||"")].join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  });
+  const tbody = document.getElementById("userTableBody");
+  const currentUser = window.SafetyVision.auth.getSessionUser();
+  if (!all.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-gray-400">Пайдаланушы табылмады</td></tr>`;
+  } else {
+    tbody.innerHTML = all.map(u => {
+      const isSelf = u.username === currentUser?.username;
+      const roleB  = u.role==="admin"
+        ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">Admin</span>`
+        : `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">Operator</span>`;
+      return `<tr class="border-b border-gray-100 hover:bg-white/60 transition ${isSelf?"bg-primary/5":""}">
+        <td class="px-5 py-3.5">
+          <div class="flex items-center gap-3">
+            <div class="user-avatar ${colorFor(u.username)} text-white">${initials(u.fullName)}</div>
+            <div><p class="font-semibold text-gray-800 text-sm">${u.fullName||"—"}</p>${isSelf?'<p class="text-xs text-primary">• Сіз</p>':""}</div>
+          </div>
+        </td>
+        <td class="px-5 py-3.5 text-gray-600 font-mono text-sm">${u.username}</td>
+        <td class="px-5 py-3.5 text-gray-500 text-sm">${u.email||"—"}</td>
+        <td class="px-5 py-3.5">${roleB}</td>
+        <td class="px-5 py-3.5 text-gray-400 text-xs">${u.createdAt||"—"}</td>
+        <td class="px-5 py-3.5 text-right flex justify-end gap-2 items-center">
+          <button onclick="openEditModal('${u.id}')" class="text-gray-400 hover:text-primary transition">
+            <span class="material-symbols-outlined" style="font-size:18px">edit</span>
+          </button>
+          ${!isSelf ? `<button onclick="confirmDeleteUser('${u.id}','${u.fullName}')" class="text-gray-400 hover:text-red-500 transition">
+            <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+          </button>` : ""}
+        </td>
+      </tr>`;
+    }).join("");
+  }
+  document.getElementById("userCount").textContent = `Барлығы: ${all.length} пайдаланушы`;
+}
+
+function openAddModal() {
+  editingUserId = null;
+  document.getElementById("userModalTitle").textContent = "Пайдаланушы қосу";
+  document.getElementById("userSaveBtn").textContent = "Қосу";
+  document.getElementById("uFullName").value = "";
+  document.getElementById("uUsername").value = "";
+  document.getElementById("uEmail").value = "";
+  document.getElementById("uPassword").value = "";
+  document.getElementById("uRole").value = "operator";
+  document.getElementById("passwordField").style.display = "";
+  document.getElementById("uUsername").disabled = false;
+  document.getElementById("userModal").classList.remove("hidden");
+}
+
+function openEditModal(id) {
+  const u = window.SafetyVision.users.getAll().find(x => x.id === id);
+  if (!u) return;
+  editingUserId = id;
+  document.getElementById("userModalTitle").textContent = "Пайдаланушыны өңдеу";
+  document.getElementById("userSaveBtn").textContent = "Сақтау";
+  document.getElementById("uFullName").value = u.fullName||"";
+  document.getElementById("uUsername").value = u.username||"";
+  document.getElementById("uEmail").value = u.email||"";
+  document.getElementById("uPassword").value = "";
+  document.getElementById("uRole").value = u.role||"operator";
+  document.getElementById("passwordField").style.display = "none"; // өңдеуде пароль жоқ
+  document.getElementById("uUsername").disabled = true;
+  document.getElementById("userModal").classList.remove("hidden");
+}
+
+function closeModal() { document.getElementById("userModal").classList.add("hidden"); }
+
+function saveUser() {
+  const fullName = document.getElementById("uFullName").value.trim();
+  const username = document.getElementById("uUsername").value.trim();
+  const email    = document.getElementById("uEmail").value.trim();
+  const password = document.getElementById("uPassword").value.trim();
+  const role     = document.getElementById("uRole").value;
+
+  if (!fullName) { window.SafetyVision.toast("Толық атты енгізіңіз!", "warning"); return; }
+
+  if (editingUserId) {
+    const patch = { fullName, email, role };
+    window.SafetyVision.users.update(editingUserId, patch);
+    window.SafetyVision.toast("Пайдаланушы жаңартылды ✓", "success");
+  } else {
+    if (!username) { window.SafetyVision.toast("Логинді енгізіңіз!", "warning"); return; }
+    if (password.length < 4) { window.SafetyVision.toast("Құпия сөз кемінде 4 таңба!", "warning"); return; }
+    const res = window.SafetyVision.users.add({ fullName, username, password, email, role });
+    if (!res.ok) { window.SafetyVision.toast(res.message, "error"); return; }
+    window.SafetyVision.toast("Пайдаланушы қосылды ✓", "success");
+  }
+  closeModal();
+  renderStats();
+  renderUsers();
+}
+
+function confirmDeleteUser(id, name) {
+  if (!confirm(`"${name}" пайдаланушысын жоясыз ба?`)) return;
+  window.SafetyVision.users.remove(id);
+  window.SafetyVision.toast("Пайдаланушы жойылды", "info");
+  renderStats();
+  renderUsers();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderStats();
+  renderUsers();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Профиль — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  input,select{border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 13px;font-size:14px;width:100%;outline:none;font-family:inherit;transition:border 0.18s;background:#fff}
+  input:focus,select:focus{border-color:#1a6fc4}
+  .avatar-ring{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#fff;flex-shrink:0}
+  .stat-card{background:rgba(255,255,255,0.6);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.8);text-align:center}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<!-- SIDEBAR -->
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div><span class="nav-label">Бақылау тақтасы</span></a>
+      <a href="incidents.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">history</span></div><span class="nav-label">Оқиғалар тарихы</span></a>
+      <a href="cameras.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">videocam</span></div><span class="nav-label">Камералар</span></a>
+      <a href="users.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">group</span></div><span class="nav-label">Пайдаланушылар</span></a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">admin_panel_settings</span></div><span class="nav-label">Әкімші панелі</span></a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <a href="settings.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">settings</span></div><span class="nav-label">Баптаулар</span></a>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <div class="mb-6">
+    <h1 class="text-gray-800 text-4xl font-black tracking-tight">Профиль</h1>
+    <p class="text-gray-500 text-sm mt-1">Жеке ақпаратыңызды басқарыңыз</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Left: Avatar + Stats -->
+    <div class="flex flex-col gap-6">
+      <!-- Profile card -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6 flex flex-col items-center text-center">
+        <div class="avatar-ring bg-primary mb-4" id="profileAvatar">??</div>
+        <h2 class="text-gray-800 text-xl font-bold" id="profileName">—</h2>
+        <p class="text-gray-400 text-sm font-mono" id="profileUsername">—</p>
+        <span class="mt-2 px-3 py-1 rounded-full text-xs font-semibold" id="profileRoleBadge">—</span>
+        <p class="text-gray-400 text-xs mt-3" id="profileCreated">—</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-5">
+        <p class="text-sm font-bold text-gray-700 mb-3">Менің белсенділігім</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="stat-card">
+            <p class="text-2xl font-bold text-gray-800" id="myIncidents">—</p>
+            <p class="text-xs text-gray-400">Тіркелген оқиға</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-2xl font-bold text-gray-800" id="myResolved">—</p>
+            <p class="text-xs text-gray-400">Шешілген</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-2xl font-bold text-primary" id="myScore">—</p>
+            <p class="text-xs text-gray-400">Белсенділік</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-2xl font-bold text-green-600" id="myDays">—</p>
+            <p class="text-xs text-gray-400">Жұмыс күні</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logout -->
+      <button onclick="window.SafetyVision.auth.logout()"
+        class="w-full px-4 py-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 font-semibold text-sm flex items-center justify-center gap-2 transition">
+        <span class="material-symbols-outlined text-base">logout</span>Жүйеден шығу
+      </button>
+    </div>
+
+    <!-- Right: Edit forms -->
+    <div class="lg:col-span-2 flex flex-col gap-6">
+
+      <!-- Personal info -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <h3 class="text-gray-800 font-bold text-lg mb-5">Жеке ақпарат</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Толық аты</label>
+            <input id="editFullName" placeholder="Толық атыңыз"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Логин</label>
+            <input id="editUsername" disabled class="bg-gray-50 text-gray-400 cursor-not-allowed"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Email</label>
+            <input id="editEmail" type="email" placeholder="email@safety.kz"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Рөл</label>
+            <input id="editRole" disabled class="bg-gray-50 text-gray-400 cursor-not-allowed"/>
+          </div>
+        </div>
+        <button onclick="saveProfile()" class="mt-5 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">save</span>Сақтау
+        </button>
+      </div>
+
+      <!-- Password change -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <h3 class="text-gray-800 font-bold text-lg mb-5">Құпия сөзді өзгерту</h3>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Ағымдағы құпия сөз</label>
+            <input id="oldPassword" type="password" placeholder="••••••••"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Жаңа құпия сөз</label>
+            <input id="newPassword" type="password" placeholder="Кемінде 4 таңба"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Жаңа құпия сөзді растау</label>
+            <input id="confirmPassword" type="password" placeholder="••••••••"/>
+          </div>
+          <button onclick="changePassword()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition flex items-center gap-2 w-fit">
+            <span class="material-symbols-outlined text-base">lock</span>Өзгерту
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <h3 class="text-gray-800 font-bold text-lg mb-4">Соңғы белсенділік</h3>
+        <div class="flex flex-col gap-3" id="recentActivity"></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("operator");
+
+const COLORS = ["#1a6fc4","#7c3aed","#059669","#d97706","#dc2626","#0891b2"];
+const initials = n => (n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+const colorFor  = u => COLORS[(u||"").charCodeAt(0) % COLORS.length];
+
+let currentUser = null;
+
+function renderProfile() {
+  currentUser = window.SafetyVision.auth.getSessionUser();
+  if (!currentUser) return;
+
+  const users     = window.SafetyVision.users.getAll();
+  const userFull  = users.find(u=>u.username===currentUser.username)||{};
+  const incidents = window.SafetyVision.incidents.getAll();
+  const resolved  = incidents.filter(x=>(x.status||"").toLowerCase()==="resolved");
+  const score     = incidents.length ? Math.round(resolved.length/incidents.length*100) : 100;
+
+  // Avatar
+  const av = document.getElementById("profileAvatar");
+  av.textContent = initials(currentUser.fullName);
+  av.style.background = colorFor(currentUser.username);
+
+  document.getElementById("profileName").textContent     = currentUser.fullName||"—";
+  document.getElementById("profileUsername").textContent = "@" + currentUser.username;
+  document.getElementById("profileCreated").textContent  = "Тіркелген: " + (userFull.createdAt||"—");
+
+  const rb = document.getElementById("profileRoleBadge");
+  if (currentUser.role==="admin") {
+    rb.textContent = "Administrator";
+    rb.className = "mt-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700";
+  } else {
+    rb.textContent = "Safety Operator";
+    rb.className = "mt-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700";
+  }
+
+  // Stats
+  const days = userFull.createdAt
+    ? Math.ceil((Date.now()-new Date(userFull.createdAt).getTime())/86400000)
+    : 1;
+  document.getElementById("myIncidents").textContent = incidents.length;
+  document.getElementById("myResolved").textContent  = resolved.length;
+  document.getElementById("myScore").textContent     = score+"%";
+  document.getElementById("myDays").textContent      = days;
+
+  // Form
+  document.getElementById("editFullName").value = currentUser.fullName||"";
+  document.getElementById("editUsername").value  = currentUser.username||"";
+  document.getElementById("editEmail").value     = userFull.email||"";
+  document.getElementById("editRole").value      = currentUser.role==="admin"?"Administrator":"Safety Operator";
+
+  // Recent activity
+  const recent = incidents.slice(0,5);
+  document.getElementById("recentActivity").innerHTML = recent.length
+    ? recent.map(it=>`
+      <a href="incident_detail.html?id=${it.id}" class="flex gap-3 items-center p-2.5 rounded-xl hover:bg-gray-50 transition">
+        <div class="w-8 h-8 rounded-lg ${it.severity==="high"?"bg-red-100":it.severity==="medium"?"bg-yellow-100":"bg-gray-100"} flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ${it.severity==="high"?"text-red-500":it.severity==="medium"?"text-yellow-500":"text-gray-400"}" style="font-size:16px">warning</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-800">#${it.id} — ${it.type}</p>
+          <p class="text-xs text-gray-400 truncate">${it.location||"—"} · ${it.date||""}</p>
+        </div>
+        <span class="px-2 py-0.5 rounded-full text-xs ${it.status==="Resolved"?"bg-green-100 text-green-600":it.status==="Investigating"?"bg-blue-100 text-blue-600":"bg-red-50 text-red-500"}">${it.status==="Resolved"?"Шешілді":it.status==="Investigating"?"Тексерілуде":"Ашық"}</span>
+      </a>`).join("")
+    : `<p class="text-gray-400 text-sm text-center py-4">Белсенділік жоқ</p>`;
+}
+
+function saveProfile() {
+  const fullName = document.getElementById("editFullName").value.trim();
+  const email    = document.getElementById("editEmail").value.trim();
+  if (!fullName) { window.SafetyVision.toast("Толық атты енгізіңіз!","warning"); return; }
+  const users = window.SafetyVision.users.getAll();
+  const u = users.find(x=>x.username===currentUser.username);
+  if (u) {
+    window.SafetyVision.users.update(u.id, {fullName, email});
+    sessionStorage.setItem("fullName", fullName);
+    window.SafetyVision.toast("Профиль сақталды ✓","success");
+    document.querySelector("[data-user-name]").textContent = fullName;
+    document.getElementById("profileName").textContent = fullName;
+    document.getElementById("profileAvatar").textContent = fullName.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+  }
+}
+
+function changePassword() {
+  const oldPass  = document.getElementById("oldPassword").value;
+  const newPass  = document.getElementById("newPassword").value;
+  const confirm2 = document.getElementById("confirmPassword").value;
+  if (!oldPass||!newPass) { window.SafetyVision.toast("Барлық өрістерді толтырыңыз!","warning"); return; }
+  if (newPass.length<4)   { window.SafetyVision.toast("Жаңа құпия сөз кемінде 4 таңба!","warning"); return; }
+  if (newPass!==confirm2) { window.SafetyVision.toast("Құпия сөздер сәйкес келмейді!","error"); return; }
+  const users = window.SafetyVision.users.getAll();
+  const u = users.find(x=>x.username===currentUser.username);
+  if (!u||u.password!==oldPass) { window.SafetyVision.toast("Ағымдағы құпия сөз қате!","error"); return; }
+  window.SafetyVision.users.update(u.id, {password:newPass});
+  window.SafetyVision.toast("Құпия сөз өзгертілді ✓","success");
+  ["oldPassword","newPassword","confirmPassword"].forEach(id=>document.getElementById(id).value="");
+}
+
+document.addEventListener("DOMContentLoaded", renderProfile);
+</script>
+</body>
+</html>

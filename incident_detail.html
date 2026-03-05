@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Оқиға мәліметтері — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  .btn-primary{background:#1a6fc4;color:#fff;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;cursor:pointer;border:none;transition:background 0.18s;display:inline-flex;align-items:center;gap:6px}
+  .btn-primary:hover{background:#155da0}
+  .btn-ghost{background:#f3f4f6;color:#374151;border-radius:10px;padding:9px 20px;font-weight:500;font-size:14px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .btn-ghost:hover{background:#e5e7eb}
+  .btn-danger{background:#fee2e2;color:#dc2626;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .btn-danger:hover{background:#fecaca}
+  textarea,select,input{border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 13px;font-size:14px;width:100%;outline:none;font-family:inherit;transition:border 0.18s;background:#fff}
+  textarea:focus,select:focus,input:focus{border-color:#1a6fc4}
+  .timeline-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+  .status-chip{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<!-- SIDEBAR -->
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div><span class="nav-label">Бақылау тақтасы</span></a>
+      <a href="incidents.html" class="nav-item active"><div class="icon-box"><span class="material-symbols-outlined fill">history</span></div><span class="nav-label">Оқиғалар тарихы</span></a>
+      <a href="cameras.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">videocam</span></div><span class="nav-label">Камералар</span></a>
+      <a href="users.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">group</span></div><span class="nav-label">Пайдаланушылар</span></a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">admin_panel_settings</span></div><span class="nav-label">Әкімші панелі</span></a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <a href="settings.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">settings</span></div><span class="nav-label">Баптаулар</span></a>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <!-- Back + Header -->
+  <div class="flex items-center gap-3 mb-6">
+    <a href="incidents.html" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/70 hover:bg-white border border-gray-200 text-gray-500 transition">
+      <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <div class="flex-1">
+      <div class="flex items-center gap-3 flex-wrap">
+        <h1 class="text-gray-800 text-3xl font-black" id="detailId">Жүктелуде...</h1>
+        <span id="severityBadge"></span>
+        <span id="statusBadge"></span>
+      </div>
+      <p class="text-gray-400 text-sm mt-0.5" id="detailDate">—</p>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="window.print()" class="btn-ghost text-sm">
+        <span class="material-symbols-outlined text-base">print</span>Басып шығару
+      </button>
+      <button onclick="confirmDelete()" class="btn-danger text-sm">
+        <span class="material-symbols-outlined text-base">delete</span>Жою
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left: main info -->
+    <div class="lg:col-span-2 flex flex-col gap-6">
+
+      <!-- Камера скриншоты -->
+      <div class="card rounded-xl border border-white/60 shadow-sm overflow-hidden">
+        <div class="relative aspect-video bg-gray-900 flex items-center justify-center" id="camSnapshot">
+          <div class="text-center">
+            <span class="material-symbols-outlined text-gray-600 text-5xl">videocam</span>
+            <p class="text-gray-500 text-sm mt-2">Камера скриншоты жоқ</p>
+          </div>
+        </div>
+        <div class="p-4 flex justify-between items-center border-t border-gray-100">
+          <div>
+            <p class="text-sm font-semibold text-gray-700" id="camName">—</p>
+            <p class="text-xs text-gray-400" id="camId">—</p>
+          </div>
+          <a href="cameras.html" class="text-primary text-sm hover:underline flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">videocam</span>Камераға өту
+          </a>
+        </div>
+      </div>
+
+      <!-- Мәліметтер карточкасы -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <h3 class="text-gray-800 font-bold text-lg mb-5">Оқиға мәліметтері</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Оқиға түрі</span>
+            <span class="text-gray-800 font-semibold" id="infoType">—</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Орны / Камера</span>
+            <span class="text-gray-800 font-semibold" id="infoLocation">—</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Анықталған уақыт</span>
+            <span class="text-gray-800 font-semibold" id="infoDate">—</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Камера ID</span>
+            <span class="text-gray-800 font-semibold font-mono" id="infoCam">—</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Маңыздылығы</span>
+            <span id="infoSeverity">—</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Мәртебесі</span>
+            <span id="infoStatus">—</span>
+          </div>
+        </div>
+        <!-- Note -->
+        <div class="mt-5 pt-5 border-t border-gray-100">
+          <span class="text-xs font-semibold text-gray-400 uppercase block mb-2">Ескерту / Нота</span>
+          <p class="text-gray-700 text-sm" id="infoNote">—</p>
+        </div>
+      </div>
+
+      <!-- Мәртебені жаңарту -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <h3 class="text-gray-800 font-bold text-lg mb-4">Мәртебені жаңарту</h3>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Жаңа мәртебе</label>
+            <select id="newStatus">
+              <option value="Open">Ашық</option>
+              <option value="Investigating">Тексерілуде</option>
+              <option value="Resolved">Шешілді</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Маңыздылығы</label>
+            <select id="newSeverity">
+              <option value="high">Жоғары</option>
+              <option value="medium">Орташа</option>
+              <option value="low">Төмен</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Ескерту / Нота</label>
+            <textarea id="newNote" rows="3" placeholder="Қосымша ақпарат немесе әрекет..."></textarea>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="saveUpdate()" class="btn-primary">
+              <span class="material-symbols-outlined text-base">save</span>Сақтау
+            </button>
+            <button onclick="quickResolve()" class="btn-ghost">
+              <span class="material-symbols-outlined text-base">check_circle</span>Шешілді деп белгілеу
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: timeline + related -->
+    <div class="flex flex-col gap-6">
+
+      <!-- Тез әрекет -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-5">
+        <h3 class="text-gray-800 font-bold mb-4">Жедел әрекет</h3>
+        <div class="flex flex-col gap-2">
+          <button onclick="quickResolve()" class="w-full px-4 py-2.5 rounded-xl bg-green-100 text-green-700 hover:bg-green-200 font-medium text-sm flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">check_circle</span>Шешілді
+          </button>
+          <button onclick="quickInvestigate()" class="w-full px-4 py-2.5 rounded-xl bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium text-sm flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">search</span>Тексеруге жіберу
+          </button>
+          <a href="incidents.html" class="w-full px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">list</span>Тізімге оралу
+          </a>
+          <a href="cameras.html" class="w-full px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">videocam</span>Камераны тексеру
+          </a>
+        </div>
+      </div>
+
+      <!-- Оқиға тарихы (timeline) -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-5">
+        <h3 class="text-gray-800 font-bold mb-4">Оқиға тарихы</h3>
+        <div class="flex flex-col gap-4" id="timeline"></div>
+      </div>
+
+      <!-- Ұқсас оқиғалар -->
+      <div class="card rounded-xl border border-white/60 shadow-sm p-5">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-gray-800 font-bold">Ұқсас оқиғалар</h3>
+          <a href="incidents.html" class="text-primary text-xs hover:underline">Барлығы</a>
+        </div>
+        <div class="flex flex-col gap-3" id="relatedList"></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("operator");
+
+const CAM_IMGS = {
+  alert:   "https://lh3.googleusercontent.com/aida-public/AB6AXuCVl4e0E0gyAsuwzY1fRCmazL1BH_T_fOG0xl35J59jSi6xEQMiXqP5c4PDDBUe5fGiJtWyQDqVwh2jqiHmCgj2X_Xl4IYcEdEP2q151Abye5ZPSy3lVrUOexZOmrZv-XUJUOkHvJz6JbcvfXS4z9DIdGwpfuNhL1AkCipZ7zgSfDB6AADEXji0AB1KcdoMhQ292vIWet6-Z1WOsybyzgy1tD9kElgu1OK7SwGA4UfhGJCCBm97rSpZhr4aY7ApJFhBlOU3nNaybWLd",
+  warning: "https://lh3.googleusercontent.com/aida-public/AB6AXuDQe1x1sWlSuaKRC5Gt_9XlnD8mlyvymErID8Lw_2EWBM7wZIVroMI9YdvdKph3TColU1O4riqC_w-jnh1l-HNZ1_QCPq5n6et_YPRaaqn8ppmwdYt5GDhvr66IwliBuAM9T9N_Ggy5gkK-E0W4BK7PGhYZjDrkMzOlaPatvLrqERU235kWPLyypYuHA1Fk7JTmpTtf4z5jMqu4F96jh9AOQARYx29nS0fahwDdgmNo4kRzYZbeA2BfqVovVPKhlzLIaWMWudGcHlAU",
+  online:  "https://lh3.googleusercontent.com/aida-public/AB6AXuBQGsT2nT-lxo03j6ZkSVO52gMVxBwPNP-Oa8ugt0-7ekKn_m1wMWCEFlB1-8-utb79zJCNRTBUCXxcb0I4geRn0KYriyJd5wQ6NtD0zaDjS7KypMtv2NOcFPvUVwetrjgZtvpvE930QNV76-Q25MlZt2gF-3uUOxDbG1taip6syHncdhLJ3VZ6gvus-6dBrTRj-U8FucgmtpZS2Jq1kpLx5PhK8ozMvkA-nQvDiufD5ihVrOcd7Zubq9Xph3QW-TOtjz-6NrgOm-YM",
+};
+
+let incidentId = null;
+let incident   = null;
+
+// URL-ден ID алу
+function getIdFromURL() {
+  const p = new URLSearchParams(window.location.search);
+  return p.get("id");
+}
+
+const sevBadge = s => s==="high"
+  ? `<span class="status-chip bg-red-100 text-red-600"><span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>Жоғары</span>`
+  : s==="low"
+  ? `<span class="status-chip bg-gray-100 text-gray-500"><span class="w-2 h-2 rounded-full bg-gray-400 inline-block"></span>Төмен</span>`
+  : `<span class="status-chip bg-yellow-100 text-yellow-600"><span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>Орташа</span>`;
+
+const stsBadge = s => s==="Resolved"
+  ? `<span class="status-chip bg-green-100 text-green-600"><span class="material-symbols-outlined" style="font-size:14px">check_circle</span>Шешілді</span>`
+  : s==="Investigating"
+  ? `<span class="status-chip bg-blue-100 text-blue-600"><span class="material-symbols-outlined" style="font-size:14px">search</span>Тексерілуде</span>`
+  : `<span class="status-chip bg-red-50 text-red-500"><span class="material-symbols-outlined" style="font-size:14px">error</span>Ашық</span>`;
+
+function renderPage(it) {
+  // Header
+  document.getElementById("detailId").textContent = "#" + it.id;
+  document.getElementById("detailDate").textContent = it.date || "—";
+  document.getElementById("severityBadge").innerHTML = sevBadge(it.severity);
+  document.getElementById("statusBadge").innerHTML   = stsBadge(it.status);
+  document.title = `#${it.id} — ҚауіпсіздікКөзі`;
+
+  // Info grid
+  document.getElementById("infoType").textContent     = it.type || "—";
+  document.getElementById("infoLocation").textContent = it.location || "—";
+  document.getElementById("infoDate").textContent     = it.date || "—";
+  document.getElementById("infoCam").textContent      = it.camera || "—";
+  document.getElementById("infoSeverity").innerHTML   = sevBadge(it.severity);
+  document.getElementById("infoStatus").innerHTML     = stsBadge(it.status);
+  document.getElementById("infoNote").textContent     = it.note || "Ескерту жазылмаған";
+
+  // Camera snapshot — base64 форматында API-дан келеді
+  const fallbackImg = it.severity==="high" ? CAM_IMGS.alert : CAM_IMGS.warning;
+  const snapshotSrc = it.snapshot_b64 || fallbackImg;
+
+  document.getElementById("camSnapshot").innerHTML = `
+    <div class="relative w-full h-full bg-black">
+      <img src="${snapshotSrc}"
+           class="w-full h-full object-cover"
+           onerror="this.src='${fallbackImg}'"/>
+      <div class="absolute top-3 left-3 bg-black/60 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full ${it.status==='Resolved'?'bg-green-400':'bg-red-500 animate-pulse'}"></span>
+        ${it.status==='Resolved'?'ШЕШІЛДІ':'ТІРКЕЛДІ'}
+      </div>
+      ${it.confidence ? `<div class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full font-semibold">AI: ${it.confidence}%</div>` : ''}
+      ${it.snapshot_b64 ? `<div class="absolute bottom-3 left-3 bg-green-600/80 text-white text-xs px-2 py-0.5 rounded">Нақты кадр</div>` : `<div class="absolute bottom-3 left-3 bg-gray-600/80 text-white text-xs px-2 py-0.5 rounded">Demo</div>`}
+      <div class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">${it.date||''}</div>
+    </div>`;
+  document.getElementById("camName").textContent = it.location || "—";
+  document.getElementById("camId").textContent   = it.camera   || "—";
+
+  // Form defaults
+  document.getElementById("newStatus").value   = it.status   || "Open";
+  document.getElementById("newSeverity").value = it.severity || "medium";
+  document.getElementById("newNote").value      = it.note     || "";
+
+  // Timeline
+  renderTimeline(it);
+
+  // Related
+  renderRelated(it);
+}
+
+function renderTimeline(it) {
+  const events = [
+    { icon:"add_circle", color:"bg-primary text-white",    label:"Оқиға тіркелді",     time: it.date||"—", note: it.type },
+  ];
+  if (it.status==="Investigating" || it.status==="Resolved") {
+    events.push({ icon:"search", color:"bg-blue-500 text-white", label:"Тексеруге алынды", time:"—", note:"Оператор тексеруде" });
+  }
+  if (it.status==="Resolved") {
+    events.push({ icon:"check_circle", color:"bg-green-500 text-white", label:"Шешілді", time:"—", note: it.note||"Оқиға жабылды" });
+  }
+  document.getElementById("timeline").innerHTML = events.map((e,i) => `
+    <div class="flex gap-3">
+      <div class="flex flex-col items-center">
+        <div class="w-8 h-8 rounded-full ${e.color} flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined" style="font-size:16px">${e.icon}</span>
+        </div>
+        ${i<events.length-1?'<div class="w-0.5 bg-gray-200 flex-1 my-1"></div>':''}
+      </div>
+      <div class="pb-4">
+        <p class="text-sm font-semibold text-gray-800">${e.label}</p>
+        <p class="text-xs text-gray-400">${e.time}</p>
+        ${e.note?`<p class="text-xs text-gray-500 mt-0.5">${e.note}</p>`:""}
+      </div>
+    </div>`).join("");
+}
+
+function renderRelated(it) {
+  const all = window.SafetyVision.incidents.getAll();
+  const related = all.filter(x => x.id!==it.id && (x.type===it.type || x.location===it.location)).slice(0,4);
+  const el = document.getElementById("relatedList");
+  if (!related.length) {
+    el.innerHTML=`<p class="text-gray-400 text-sm">Ұқсас оқиға табылмады</p>`; return;
+  }
+  el.innerHTML = related.map(r=>`
+    <a href="incident_detail.html?id=${r.id}" class="flex gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+      <div class="w-8 h-8 rounded-lg ${r.severity==="high"?"bg-red-100":r.severity==="medium"?"bg-yellow-100":"bg-gray-100"} flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-sm ${r.severity==="high"?"text-red-500":r.severity==="medium"?"text-yellow-500":"text-gray-400"}" style="font-size:16px">warning</span>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-gray-800">#${r.id}</p>
+        <p class="text-xs text-gray-400 truncate" style="max-width:160px">${r.type} — ${r.location}</p>
+      </div>
+    </a>`).join("");
+}
+
+async function saveUpdate() {
+  if (!incident) return;
+  const patch = {
+    status: document.getElementById("newStatus").value,
+    note:   document.getElementById("newNote").value.trim(),
+  };
+  await syncUpdate(incident.id, patch);
+  window.SafetyVision.toast("Оқиға жаңартылды ✓","success");
+  incident = {...incident, ...patch};
+  renderPage(incident);
+}
+
+async function quickResolve() {
+  if (!incident) return;
+  await syncUpdate(incident.id, {status:"Resolved"});
+  window.SafetyVision.toast("Оқиға шешілді деп белгіленді ✓","success");
+  incident = {...incident, status:"Resolved"};
+  document.getElementById("newStatus").value = "Resolved";
+  renderPage(incident);
+}
+
+async function quickInvestigate() {
+  if (!incident) return;
+  await syncUpdate(incident.id, {status:"Investigating"});
+  window.SafetyVision.toast("Тексеруге жіберілді","info");
+  incident = {...incident, status:"Investigating"};
+  document.getElementById("newStatus").value = "Investigating";
+  renderPage(incident);
+}
+
+async function confirmDelete() {
+  if (!confirm("Оқиғаны жоясыз ба?")) return;
+  await syncDelete(incident.id);
+  window.SafetyVision.toast("Оқиға жойылды","info");
+  setTimeout(() => { window.location.href="incidents.html"; }, 1000);
+}
+
+async function loadIncident(id) {
+  // 1. Алдымен AI API-дан жүктейміз (нақты деректер + snapshot)
+  try {
+    const res = await fetch(`http://localhost:8000/api/incidents/${id}`,
+                            { signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.id) {
+        // AI деректерін localStorage-қа да сақтаймыз
+        window.SafetyVision.incidents.update(id, data);
+        return data;
+      }
+    }
+  } catch(e) { /* AI офлайн болса localStorage-тан алмыз */ }
+
+  // 2. Fallback — localStorage
+  const all = window.SafetyVision.incidents.getAll();
+  return all.find(x => x.id === id) || null;
+}
+
+// Status/Note жаңарту — AI API + localStorage екеуіне де жазамыз
+async function syncUpdate(id, patch) {
+  try {
+    await fetch(`http://localhost:8000/api/incidents/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch(e) { /* офлайн болса localStorage-та сақталады */ }
+  window.SafetyVision.incidents.update(id, patch);
+}
+
+// Delete — AI API + localStorage
+async function syncDelete(id) {
+  try {
+    await fetch(`http://localhost:8000/api/incidents/${id}`, {
+      method: "DELETE",
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch(e) {}
+  window.SafetyVision.incidents.remove(id);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  incidentId = getIdFromURL();
+  if (!incidentId) { window.location.href="incidents.html"; return; }
+
+  // Loading индикаторы
+  document.getElementById("camSnapshot").innerHTML =
+    `<div class="flex items-center justify-center w-full h-full bg-gray-900">
+       <div class="text-white text-sm opacity-60">Жүктелуде...</div>
+     </div>`;
+
+  incident = await loadIncident(incidentId);
+  if (!incident) {
+    window.SafetyVision.toast("Оқиға табылмады","error");
+    setTimeout(() => { window.location.href="incidents.html"; }, 1500);
+    return;
+  }
+  renderPage(incident);
+});
+</script>
+</body>
+</html>

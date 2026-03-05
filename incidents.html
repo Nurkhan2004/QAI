@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Оқиғалар тарихы — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+  .modal-box{background:#fff;border-radius:18px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.18)}
+  .btn-primary{background:#1a6fc4;color:#fff;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;transition:background 0.18s;border:none;cursor:pointer}
+  .btn-primary:hover{background:#155da0}
+  .btn-ghost{background:#f3f4f6;color:#374151;border-radius:10px;padding:9px 20px;font-weight:500;font-size:14px;border:none;cursor:pointer;transition:background 0.18s}
+  .btn-ghost:hover{background:#e5e7eb}
+  .btn-danger{background:#fee2e2;color:#dc2626;border-radius:10px;padding:9px 20px;font-weight:600;font-size:14px;border:none;cursor:pointer;transition:background 0.18s}
+  .btn-danger:hover{background:#fecaca}
+  input,select,textarea{border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 13px;font-size:14px;width:100%;outline:none;font-family:inherit;transition:border 0.18s}
+  input:focus,select:focus,textarea:focus{border-color:#1a6fc4}
+  .filter-btn{padding:6px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#6b7280;transition:all 0.18s}
+  .filter-btn.active{background:#1a6fc4;color:#fff;border-color:#1a6fc4}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<!-- SIDEBAR -->
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div>
+        <span class="nav-label">Бақылау тақтасы</span>
+      </a>
+      <a href="incidents.html" class="nav-item active">
+        <div class="icon-box"><span class="material-symbols-outlined fill">history</span></div>
+        <span class="nav-label">Оқиғалар тарихы</span>
+      </a>
+      <a href="cameras.html" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">videocam</span></div>
+        <span class="nav-label">Камералар</span>
+      </a>
+      <a href="users.html" data-role="admin" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">group</span></div>
+        <span class="nav-label">Пайдаланушылар</span>
+      </a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item">
+        <div class="icon-box"><span class="material-symbols-outlined">admin_panel_settings</span></div>
+        <span class="nav-label">Әкімші панелі</span>
+      </a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <div class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">settings</span></div><span class="nav-label">Баптаулар</span></div>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+    <div>
+      <h1 class="text-gray-800 text-4xl font-black leading-tight tracking-tight">Оқиғалар тарихы</h1>
+        <span id="aiSyncBadge" class="text-xs text-gray-400 flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 ml-2"><span class="w-2 h-2 rounded-full bg-gray-300 inline-block mr-1"></span>AI...</span>
+      <p class="text-gray-500 text-sm mt-1">Барлық анықталған оқиғалар мен аналитика</p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="exportCSV()" class="flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white/70 px-4 text-gray-700 hover:bg-white text-sm font-medium transition">
+        <span class="material-symbols-outlined text-base">download</span>CSV экспорт
+      </button>
+      <button onclick="openAddModal()" class="flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-white hover:bg-primary/90 text-sm font-medium transition shadow-sm">
+        <span class="material-symbols-outlined text-base">add</span>Оқиға қосу
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="statsRow"></div>
+
+  <!-- Filters -->
+  <div class="card rounded-xl border border-white/60 shadow-sm mb-4 p-4 flex flex-wrap gap-3 items-center">
+    <div class="relative flex-1 min-w-[200px]">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+      <input id="searchInput" class="pl-10" placeholder="Іздеу: ID, түрі, орны..." oninput="renderTable()"/>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <button class="filter-btn active" data-period="all"    onclick="setPeriod(this)">Барлығы</button>
+      <button class="filter-btn"        data-period="today"  onclick="setPeriod(this)">Бүгін</button>
+      <button class="filter-btn"        data-period="7"      onclick="setPeriod(this)">7 күн</button>
+      <button class="filter-btn"        data-period="30"     onclick="setPeriod(this)">30 күн</button>
+    </div>
+    <select id="filterSeverity" onchange="renderTable()" style="width:auto;min-width:130px">
+      <option value="">Маңыздылық</option>
+      <option value="high">Жоғары</option>
+      <option value="medium">Орташа</option>
+      <option value="low">Төмен</option>
+    </select>
+    <select id="filterStatus" onchange="renderTable()" style="width:auto;min-width:130px">
+      <option value="">Мәртебе</option>
+      <option value="Open">Ашық</option>
+      <option value="Investigating">Тексерілуде</option>
+      <option value="Resolved">Шешілді</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div class="card rounded-xl border border-white/60 shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-xs text-gray-500 uppercase bg-gray-100/80">
+          <tr>
+            <th class="px-5 py-3">ID</th>
+            <th class="px-5 py-3">Күні</th>
+            <th class="px-5 py-3">Орны / Камера</th>
+            <th class="px-5 py-3">Түрі</th>
+            <th class="px-5 py-3">Маңыздылығы</th>
+            <th class="px-5 py-3">Мәртебесі</th>
+            <th class="px-5 py-3 text-right">Әрекет</th>
+          </tr>
+        </thead>
+        <tbody id="incidentTableBody"></tbody>
+      </table>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between items-center p-5 border-t border-gray-100 gap-3">
+      <span class="text-sm text-gray-500" id="pageInfo"></span>
+      <div class="flex gap-1" id="pagination"></div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div id="incidentModal" class="modal-bg hidden">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-5">
+      <h2 class="text-lg font-bold text-gray-800" id="modalTitle">Оқиға қосу</h2>
+      <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-4">
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Оқиға түрі *</label>
+        <select id="mType">
+          <option value="Каска жоқ">Каска жоқ</option>
+          <option value="Қауіпсіздік жилеті жоқ">Қауіпсіздік жилеті жоқ</option>
+          <option value="Аймаққа рұқсатсыз кіру">Аймаққа рұқсатсыз кіру</option>
+          <option value="Жақындық ескертуі">Жақындық ескертуі</option>
+          <option value="Адам анықталды">Адам анықталды</option>
+          <option value="Басқа">Басқа</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Орны / Камера *</label>
+        <input id="mLocation" placeholder="мыс. Қойма B секциясы / Кам-03"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Маңыздылығы</label>
+          <select id="mSeverity">
+            <option value="high">Жоғары</option>
+            <option value="medium">Орташа</option>
+            <option value="low">Төмен</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Мәртебесі</label>
+          <select id="mStatus">
+            <option value="Open">Ашық</option>
+            <option value="Investigating">Тексерілуде</option>
+            <option value="Resolved">Шешілді</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500 mb-1 block">Ескерту / Нота</label>
+        <textarea id="mNote" rows="2" placeholder="Қосымша ақпарат..."></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6 justify-end">
+      <button onclick="closeModal()" class="btn-ghost">Болдырмау</button>
+      <button onclick="saveModal()" class="btn-primary" id="modalSaveBtn">Сақтау</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div id="detailModal" class="modal-bg hidden">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="flex justify-between items-center mb-5">
+      <h2 class="text-lg font-bold text-gray-800" id="detailTitle">Оқиға мәліметтері</h2>
+      <button onclick="closeDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    <div id="detailBody" class="flex flex-col gap-3 text-sm text-gray-700"></div>
+    <div class="flex gap-3 mt-6 justify-end">
+      <button class="btn-danger" id="detailDeleteBtn">Жою</button>
+      <button class="btn-ghost"  id="detailEditBtn">Өңдеу</button>
+      <button onclick="closeDetailModal()" class="btn-primary">Жабу</button>
+    </div>
+  </div>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("operator");
+
+const PER_PAGE = 8;
+let currentPage = 1;
+let currentPeriod = "all";
+let editingId = null;
+
+// ── Stats ──────────────────────────────────────
+function renderStats() {
+  const all = window.SafetyVision.incidents.getAll();
+  const open = all.filter(x => (x.status||"").toLowerCase() !== "resolved");
+  const high = all.filter(x => x.severity === "high");
+  const today = all.filter(x => {
+    const d = new Date(x.createdAt||x.date||0);
+    const n = new Date(); return d.toDateString() === n.toDateString();
+  });
+  const row = document.getElementById("statsRow");
+  const card = (icon, color, label, val, sub) =>
+    `<div class="card rounded-xl p-5 border border-white/60 shadow-sm flex flex-col gap-1">
+      <div class="flex justify-between items-center mb-1">
+        <p class="text-gray-500 text-xs font-semibold uppercase tracking-wide">${label}</p>
+        <div class="w-8 h-8 rounded-lg ${color} flex items-center justify-center">
+          <span class="material-symbols-outlined text-sm" style="font-size:18px">${icon}</span>
+        </div>
+      </div>
+      <p class="text-gray-800 text-3xl font-bold">${val}</p>
+      <p class="text-gray-400 text-xs">${sub}</p>
+    </div>`;
+  row.innerHTML =
+    card("history","bg-primary/15 text-primary","Барлық оқиғалар", all.length, "Жалпы саны") +
+    card("warning","bg-red-100 text-red-500","Ашық", open.length, "Шешімді қажет") +
+    card("local_fire_department","bg-orange-100 text-orange-500","Жоғары қауіп", high.length, "High severity") +
+    card("today","bg-green-100 text-green-600","Бүгін", today.length, "Бүгінгі оқиғалар");
+}
+
+// ── Filter ────────────────────────────────────
+function setPeriod(btn) {
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  currentPeriod = btn.dataset.period;
+  currentPage = 1;
+  renderTable();
+}
+
+function getFiltered() {
+  const all = window.SafetyVision.incidents.getAll();
+  const q = (document.getElementById("searchInput")?.value||"").toLowerCase();
+  const sev = document.getElementById("filterSeverity")?.value||"";
+  const sts = document.getElementById("filterStatus")?.value||"";
+  const now = Date.now();
+  const day = 86400000;
+
+  return all.filter(x => {
+    // period
+    const t = new Date(x.createdAt||x.date||0).getTime();
+    if (currentPeriod === "today" && (now - t) > day) return false;
+    if (currentPeriod === "7"  && (now - t) > 7*day) return false;
+    if (currentPeriod === "30" && (now - t) > 30*day) return false;
+    // search
+    if (q && ![(x.id||""),(x.type||""),(x.location||""),(x.status||"")].join(" ").toLowerCase().includes(q)) return false;
+    // severity / status
+    if (sev && x.severity !== sev) return false;
+    if (sts && x.status !== sts) return false;
+    return true;
+  });
+}
+
+// ── Table ─────────────────────────────────────
+function severityBadge(s, item) {
+  // AI оқиғасы болса → confidence пайызын көрсетеміз
+  const conf = item && item.note && item.note.match(/(\d+)%/);
+  const pct  = conf ? parseInt(conf[1]) : null;
+
+  if (pct !== null) {
+    // Пайызға қарай түс береміз
+    const color = pct >= 80
+      ? "bg-red-100 text-red-600"
+      : pct >= 60
+        ? "bg-orange-100 text-orange-500"
+        : "bg-yellow-100 text-yellow-600";
+    return `<span class="px-2 py-0.5 rounded-full text-xs font-semibold ${color}">${pct}%</span>`;
+  }
+
+  // Қолмен қосылған оқиға → бұрынғыдай
+  if (s==="high")   return `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600">Жоғары</span>`;
+  if (s==="medium") return `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">Орташа</span>`;
+  return `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Төмен</span>`;
+}
+function statusBadge(s) {
+  if (s==="Open")          return `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">Ашық</span>`;
+  if (s==="Investigating") return `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-600">Тексерілуде</span>`;
+  return `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-600">Шешілді</span>`;
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const page = filtered.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
+
+  const tbody = document.getElementById("incidentTableBody");
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-10 text-gray-400">Оқиға табылмады</td></tr>`;
+  } else {
+    tbody.innerHTML = page.map(it => `
+      <tr class="border-b border-gray-100 hover:bg-white/60 transition">
+        <td class="px-5 py-3.5 font-semibold text-gray-800">#${it.id}</td>
+        <td class="px-5 py-3.5 text-gray-500 text-xs">${it.date||""}</td>
+        <td class="px-5 py-3.5 text-gray-600">${it.location||"-"}</td>
+        <td class="px-5 py-3.5 text-gray-700">${it.type||"-"}</td>
+        <td class="px-5 py-3.5">${severityBadge(it.severity, it)}</td>
+        <td class="px-5 py-3.5">${statusBadge(it.status)}</td>
+        <td class="px-5 py-3.5 text-right">
+          <button onclick="window.location.href='incident_detail.html?id='+'${it.id}'" class="text-primary hover:underline text-xs font-medium mr-2">Толығырақ</button>
+          <button onclick="openEditModal('${it.id}')" class="text-gray-400 hover:text-gray-700 mr-1"><span class="material-symbols-outlined text-base" style="font-size:17px">edit</span></button>
+          <button onclick="confirmDelete('${it.id}')" class="text-red-400 hover:text-red-600"><span class="material-symbols-outlined text-base" style="font-size:17px">delete</span></button>
+        </td>
+      </tr>`).join("");
+  }
+
+  // Page info
+  const from = total ? (currentPage-1)*PER_PAGE+1 : 0;
+  const to   = Math.min(currentPage*PER_PAGE, total);
+  document.getElementById("pageInfo").textContent = `Көрсетілуде: ${from}–${to} / ${total}`;
+
+  // Pagination
+  const pag = document.getElementById("pagination");
+  pag.innerHTML = "";
+  if (totalPages <= 1) return;
+  const btn = (label, page, disabled=false, active=false) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.disabled = disabled;
+    b.className = `px-3 py-1.5 text-sm rounded-lg border transition ${active?"bg-primary text-white border-primary":"bg-white text-gray-600 border-gray-200 hover:bg-gray-50"} ${disabled?"opacity-40 cursor-not-allowed":""}`;
+    if (!disabled) b.onclick = () => { currentPage = page; renderTable(); };
+    return b;
+  };
+  pag.appendChild(btn("←", currentPage-1, currentPage===1));
+  for (let i=1; i<=totalPages; i++) pag.appendChild(btn(i, i, false, i===currentPage));
+  pag.appendChild(btn("→", currentPage+1, currentPage===totalPages));
+}
+
+// ── Add/Edit Modal ────────────────────────────
+function openAddModal() {
+  editingId = null;
+  document.getElementById("modalTitle").textContent = "Оқиға қосу";
+  document.getElementById("modalSaveBtn").textContent = "Қосу";
+  document.getElementById("mType").value = "Каска жоқ";
+  document.getElementById("mLocation").value = "";
+  document.getElementById("mSeverity").value = "high";
+  document.getElementById("mStatus").value = "Open";
+  document.getElementById("mNote").value = "";
+  document.getElementById("incidentModal").classList.remove("hidden");
+}
+function openEditModal(id) {
+  const it = window.SafetyVision.incidents.getAll().find(x => x.id === id);
+  if (!it) return;
+  editingId = id;
+  document.getElementById("modalTitle").textContent = "Оқиғаны өңдеу";
+  document.getElementById("modalSaveBtn").textContent = "Сақтау";
+  document.getElementById("mType").value = it.type||"";
+  document.getElementById("mLocation").value = it.location||"";
+  document.getElementById("mSeverity").value = it.severity||"medium";
+  document.getElementById("mStatus").value = it.status||"Open";
+  document.getElementById("mNote").value = it.note||"";
+  document.getElementById("incidentModal").classList.remove("hidden");
+  closeDetailModal();
+}
+function closeModal() { document.getElementById("incidentModal").classList.add("hidden"); }
+function saveModal() {
+  const loc = document.getElementById("mLocation").value.trim();
+  if (!loc) { window.SafetyVision.toast("Орынды енгізіңіз!", "warning"); return; }
+  const data = {
+    type: document.getElementById("mType").value,
+    location: loc,
+    severity: document.getElementById("mSeverity").value,
+    status: document.getElementById("mStatus").value,
+    note: document.getElementById("mNote").value.trim(),
+  };
+  if (editingId) {
+    window.SafetyVision.incidents.update(editingId, data);
+    window.SafetyVision.toast("Оқиға жаңартылды", "success");
+  } else {
+    window.SafetyVision.incidents.add(data);
+    window.SafetyVision.toast("Жаңа оқиға қосылды", "success");
+  }
+  closeModal();
+  renderStats();
+  renderTable();
+}
+
+// ── Detail Modal ──────────────────────────────
+function openDetail(id) {
+  const it = window.SafetyVision.incidents.getAll().find(x => x.id === id);
+  if (!it) return;
+  document.getElementById("detailTitle").textContent = "#" + it.id;
+  const row = (label, val) => `<div class="flex gap-3"><span class="text-gray-400 w-36 shrink-0">${label}</span><span class="font-medium text-gray-800">${val||"—"}</span></div>`;
+  document.getElementById("detailBody").innerHTML =
+    row("Оқиға түрі:", it.type) +
+    row("Орны / Камера:", it.location) +
+    row("Маңыздылығы:", it.severity==="high"?"🔴 Жоғары":it.severity==="medium"?"🟡 Орташа":"🟢 Төмен") +
+    row("Мәртебесі:", it.status) +
+    row("Күні:", it.date) +
+    (it.note ? row("Ескерту:", it.note) : "");
+  document.getElementById("detailDeleteBtn").onclick = () => confirmDelete(id);
+  document.getElementById("detailEditBtn").onclick   = () => openEditModal(id);
+  document.getElementById("detailModal").classList.remove("hidden");
+}
+function closeDetailModal() { document.getElementById("detailModal").classList.add("hidden"); }
+
+// ── Delete ────────────────────────────────────
+function confirmDelete(id) {
+  if (!confirm("Оқиғаны жоясыз ба?")) return;
+  window.SafetyVision.incidents.remove(id);
+  window.SafetyVision.toast("Оқиға жойылды", "info");
+  closeDetailModal();
+  renderStats();
+  renderTable();
+}
+
+// ── Export CSV ────────────────────────────────
+function exportCSV() {
+  const all = window.SafetyVision.incidents.getAll();
+  const h = ["id","date","type","severity","location","status","note"];
+  const csv = h.join(",") + "\n" + all.map(it => h.map(k => `"${(it[k]||"").toString().replaceAll('"','""')}"`).join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["\uFEFF"+csv], {type:"text/csv;charset=utf-8"}));
+  a.download = "incidents_" + new Date().toISOString().slice(0,10) + ".csv";
+  a.click();
+  window.SafetyVision.toast("CSV жүктелуде...", "success");
+}
+
+// ── Init ──────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  renderStats();
+  renderTable();
+});
+
+// ══════════════════════════════════════════════════════════
+//  AI СЕРВЕР СИНХРОНИЗАЦИЯСЫ
+// ══════════════════════════════════════════════════════════
+const AI_API = "http://localhost:8000";
+
+async function syncFromAI() {
+  try {
+    const res = await fetch(`${AI_API}/api/incidents?limit=200`, {
+      signal: AbortSignal.timeout(3000)
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const aiIncidents = data.incidents || [];
+    if (!aiIncidents.length) { updateSyncBadge(true, 0, 0); return; }
+
+    const existing = window.SafetyVision.incidents.getAll();
+    const existingIds = new Set(existing.map(x => x.id));
+
+    let added = 0;
+    for (const inc of aiIncidents) {
+      if (!existingIds.has(inc.id)) {
+        const item = {
+          id:        inc.id,
+          type:      inc.type || "Каска жоқ",
+          location:  inc.location || ("Camera " + (inc.camera || "")),
+          camera:    inc.camera || "CAM-01",
+          severity:  inc.severity || "high",
+          status:    inc.status || "Open",
+          date:      inc.date || new Date(inc.timestamp || Date.now()).toLocaleString("kk-KZ"),
+          createdAt: inc.timestamp || new Date().toISOString(),
+          note:      `AI: ${inc.confidence || "?"}% сенімділік`,
+        };
+        window.SafetyVision.incidents.add(item);
+        added++;
+      }
+    }
+
+    if (added > 0) { renderStats(); renderTable(); }
+    updateSyncBadge(true, aiIncidents.length, added);
+  } catch(e) {
+    updateSyncBadge(false, 0, 0);
+  }
+}
+
+function updateSyncBadge(online, total, added) {
+  const b = document.getElementById("aiSyncBadge");
+  if (!b) return;
+  if (online) {
+    b.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400 inline-block mr-1"></span>AI: ${total} оқиға${added > 0 ? ` <span class="bg-green-100 text-green-700 px-1 rounded-full">+${added}</span>` : ""}`;
+    b.className = "text-xs text-green-600 flex items-center gap-1";
+  } else {
+    b.innerHTML = `<span class="w-2 h-2 rounded-full bg-gray-300 inline-block mr-1"></span>AI офлайн`;
+    b.className = "text-xs text-gray-400 flex items-center gap-1";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  syncFromAI();
+  setInterval(syncFromAI, 5000);
+});
+
+</script>
+</body>
+</html>

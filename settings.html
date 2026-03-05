@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Баптаулар — ҚауіпсіздікКөзі</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config={theme:{extend:{colors:{primary:"#1a6fc4"},fontFamily:{display:["Public Sans","sans-serif"]}}}}</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  .fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .main-bg{background:#f4f8ff;min-height:100vh}
+  .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+  .orb-1{width:600px;height:600px;background:radial-gradient(circle,#2980d9,transparent 70%);top:-200px;right:-100px;opacity:0.12}
+  .orb-2{width:400px;height:400px;background:radial-gradient(circle,#42a5f5,transparent 70%);bottom:20%;left:-100px;opacity:0.08}
+  .card{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px)}
+  .sidebar{background:#14181f;width:72px;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .sidebar:hover{width:224px}
+  .nav-item{display:flex;align-items:center;padding:6px 12px;border-radius:10px;cursor:pointer;transition:background 0.18s;color:#8a9bb0;text-decoration:none;white-space:nowrap;min-height:44px}
+  .nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+  .nav-item.active{background:#1e2a38;color:#fff}
+  .icon-box{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;flex-shrink:0}
+  .nav-item.active .icon-box{background:rgba(26,111,196,0.2)}
+  .nav-item.active .icon-box .material-symbols-outlined{color:#4fa3e8}
+  .nav-label{font-size:13px;font-weight:500;opacity:0;max-width:0;overflow:hidden;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .nav-label{opacity:1;max-width:160px;margin-left:10px}
+  .logo-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;font-weight:700;font-size:15px;color:#fff;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .logo-text{opacity:1;max-width:160px;margin-left:10px}
+  .user-info-text{opacity:0;max-width:0;overflow:hidden;white-space:nowrap;transition:opacity 0.22s 0.05s,max-width 0.28s,margin-left 0.28s;margin-left:0}
+  .sidebar:hover .user-info-text{opacity:1;max-width:160px;margin-left:10px}
+  .sdivider{height:1px;background:rgba(255,255,255,0.07);margin:6px 12px}
+  input,select,textarea{border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 13px;font-size:14px;width:100%;outline:none;font-family:inherit;transition:border 0.18s;background:#fff}
+  input:focus,select:focus,textarea:focus{border-color:#1a6fc4}
+  .toggle{position:relative;display:inline-block;width:44px;height:24px}
+  .toggle input{opacity:0;width:0;height:0}
+  .slider{position:absolute;cursor:pointer;inset:0;background:#e5e7eb;border-radius:24px;transition:0.3s}
+  .slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+  input:checked+.slider{background:#1a6fc4}
+  input:checked+.slider:before{transform:translateX(20px)}
+  .tab-btn{padding:8px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.18s;border:none;background:transparent;color:#6b7280}
+  .tab-btn.active{background:#1a6fc4;color:#fff}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+  .section-title{font-size:15px;font-weight:700;color:#1f2937;margin-bottom:16px;padding-bottom:8px;border-bottom:1.5px solid #f3f4f6}
+  .setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f9fafb}
+  .setting-row:last-child{border-bottom:none}
+</style>
+</head>
+<body class="font-display main-bg">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="flex h-screen w-full overflow-hidden" style="position:relative;z-index:1;">
+
+<!-- SIDEBAR -->
+<aside class="sidebar flex flex-col justify-between py-4 sticky top-0 h-screen shrink-0">
+  <div class="flex flex-col gap-1">
+    <div class="flex items-center px-[14px] py-3 mb-1" style="min-height:52px;">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900/40 shrink-0">
+        <span class="material-symbols-outlined fill text-[#4fa3e8] text-xl">shield</span>
+      </div>
+      <span class="logo-text">ҚауіпсіздікКөзі</span>
+    </div>
+    <div class="flex items-center px-[14px] py-2 mb-1">
+      <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center shrink-0 ring-2 ring-white/10">
+        <span class="material-symbols-outlined text-white text-lg">person</span>
+      </div>
+      <div class="user-info-text flex flex-col">
+        <span class="text-white text-sm font-semibold leading-tight" data-user-name>Пайдаланушы</span>
+        <span class="text-[#8a9bb0] text-xs" data-user-role>Оператор</span>
+      </div>
+    </div>
+    <div class="sdivider"></div>
+    <div class="flex flex-col gap-0.5 px-2">
+      <a href="dashboard.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">dashboard</span></div><span class="nav-label">Бақылау тақтасы</span></a>
+      <a href="incidents.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">history</span></div><span class="nav-label">Оқиғалар тарихы</span></a>
+      <a href="cameras.html" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">videocam</span></div><span class="nav-label">Камералар</span></a>
+      <a href="users.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">group</span></div><span class="nav-label">Пайдаланушылар</span></a>
+      <a href="admin_dashboard.html" data-role="admin" class="nav-item"><div class="icon-box"><span class="material-symbols-outlined">admin_panel_settings</span></div><span class="nav-label">Әкімші панелі</span></a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-0.5 px-2">
+    <div class="sdivider mb-1"></div>
+    <a href="settings.html" class="nav-item active"><div class="icon-box"><span class="material-symbols-outlined fill">settings</span></div><span class="nav-label">Баптаулар</span></a>
+    <a href="#logout" class="logout-btn nav-item"><div class="icon-box"><span class="material-symbols-outlined">logout</span></div><span class="nav-label">Шығу</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8">
+  <div class="mb-6">
+    <h1 class="text-gray-800 text-4xl font-black tracking-tight">Баптаулар</h1>
+    <p class="text-gray-500 text-sm mt-1">Жүйе параметрлері мен хабарландыруларды баптаңыз</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-6 bg-gray-100/70 p-1.5 rounded-xl w-fit">
+    <button class="tab-btn active" onclick="switchTab('general',this)">Жалпы</button>
+    <button class="tab-btn" onclick="switchTab('notifications',this)">Хабарландыру</button>
+    <button class="tab-btn" onclick="switchTab('security',this)">Қауіпсіздік</button>
+    <button class="tab-btn" onclick="switchTab('system',this)">Жүйе</button>
+  </div>
+
+  <!-- GENERAL -->
+  <div id="tab-general" class="tab-content active">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Жүйе параметрлері</p>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Жүйе атауы</label>
+            <input id="sysName" value="ҚауіпсіздікКөзі" placeholder="Жүйе атауы"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Объект атауы</label>
+            <input id="siteName" value="Алматы өнеркәсіп кешені" placeholder="Объект/ұйым атауы"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Тіл</label>
+            <select id="lang">
+              <option value="kk" selected>Қазақша</option>
+              <option value="ru">Русский</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Уақыт белдеуі</label>
+            <select id="timezone">
+              <option value="Asia/Almaty" selected>Алматы (UTC+5)</option>
+              <option value="Asia/Astana">Астана (UTC+5)</option>
+              <option value="Europe/Moscow">Мәскеу (UTC+3)</option>
+            </select>
+          </div>
+          <button onclick="saveGeneral()" class="mt-2 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition w-fit">
+            Сақтау
+          </button>
+        </div>
+      </div>
+
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Камера баптаулары</p>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Бейне сапасы</label>
+            <select id="videoQuality">
+              <option value="720">720p HD</option>
+              <option value="1080" selected>1080p Full HD</option>
+              <option value="4k">4K Ultra HD</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Кадр жиілігі (FPS)</label>
+            <select id="fps">
+              <option value="15">15 FPS</option>
+              <option value="25" selected>25 FPS</option>
+              <option value="30">30 FPS</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Жазба сақтау мерзімі (күн)</label>
+            <input id="retentionDays" type="number" value="30" min="1" max="365"/>
+          </div>
+          <div class="setting-row">
+            <div>
+              <p class="text-sm font-medium text-gray-700">Автоматты жазба</p>
+              <p class="text-xs text-gray-400">Барлық камераларды үнемі жазу</p>
+            </div>
+            <label class="toggle"><input type="checkbox" id="autoRecord" checked/><span class="slider"></span></label>
+          </div>
+          <button onclick="saveCameraSettings()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition w-fit">
+            Сақтау
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div id="tab-notifications" class="tab-content">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Хабарландыру түрлері</p>
+        <div class="flex flex-col">
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Браузер хабарландырулары</p><p class="text-xs text-gray-400">Жаңа оқиға кезінде popup</p></div>
+            <label class="toggle"><input type="checkbox" id="notifBrowser" checked/><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Дыбыстық ескерту</p><p class="text-xs text-gray-400">Жоғары деңгей оқиғасында дыбыс</p></div>
+            <label class="toggle"><input type="checkbox" id="notifSound" checked/><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Email хабарландыру</p><p class="text-xs text-gray-400">Маңызды оқиғаларда email</p></div>
+            <label class="toggle"><input type="checkbox" id="notifEmail"/><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Dashboard auto-refresh</p><p class="text-xs text-gray-400">30 сек сайын жаңарту</p></div>
+            <label class="toggle"><input type="checkbox" id="notifRefresh" checked/><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Ескерту деңгейлері</p>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Минималды ескерту деңгейі</label>
+            <select id="alertLevel">
+              <option value="low">Барлығы (Төмен+)</option>
+              <option value="medium" selected>Орташа+</option>
+              <option value="high">Тек Жоғары</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Ескерту email мекенжайы</label>
+            <input id="alertEmail" type="email" placeholder="alert@safety.kz"/>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Дыбыс деңгейі</label>
+            <input id="soundVolume" type="range" min="0" max="100" value="70" class="w-full" style="padding:0;border:none;background:transparent"/>
+            <p class="text-xs text-gray-400 mt-1">Деңгей: <span id="volumeVal">70</span>%</p>
+          </div>
+          <button onclick="testNotification()" class="px-5 py-2.5 bg-primary/15 text-primary rounded-xl text-sm font-semibold hover:bg-primary/25 transition w-fit flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">notifications</span>Тест хабарландыру
+          </button>
+          <button onclick="saveNotifications()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition w-fit">
+            Сақтау
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECURITY -->
+  <div id="tab-security" class="tab-content">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Сессия баптаулары</p>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Сессия мерзімі (минут)</label>
+            <select id="sessionTimeout">
+              <option value="30">30 минут</option>
+              <option value="60" selected>1 сағат</option>
+              <option value="120">2 сағат</option>
+              <option value="480">8 сағат</option>
+              <option value="0">Шексіз</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Автоматты шығу</p><p class="text-xs text-gray-400">Белсенді болмаса автошығу</p></div>
+            <label class="toggle"><input type="checkbox" id="autoLogout" checked/><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Кіру журналы</p><p class="text-xs text-gray-400">Барлық кіруді тіркеу</p></div>
+            <label class="toggle"><input type="checkbox" id="loginLog" checked/><span class="slider"></span></label>
+          </div>
+          <button onclick="saveSecurity()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition w-fit">
+            Сақтау
+          </button>
+        </div>
+      </div>
+
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">AI Анықтау баптаулары</p>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 mb-1 block">Анықтау сенімділігі (% threshold)</label>
+            <input id="aiConfidence" type="number" value="75" min="50" max="99"/>
+            <p class="text-xs text-gray-400 mt-1">Осы % жоғары болса ғана оқиға тіркеледі</p>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Каска анықтау</p><p class="text-xs text-gray-400">YOLOv8 — helmet detection</p></div>
+            <label class="toggle"><input type="checkbox" id="detectHelmet" checked/><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Жилет анықтау</p><p class="text-xs text-gray-400">YOLOv8 — vest detection</p></div>
+            <label class="toggle"><input type="checkbox" id="detectVest" checked/><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div><p class="text-sm font-medium text-gray-700">Рұқсатсыз аймақ</p><p class="text-xs text-gray-400">Zone intrusion detection</p></div>
+            <label class="toggle"><input type="checkbox" id="detectZone" checked/><span class="slider"></span></label>
+          </div>
+          <button onclick="saveAI()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition w-fit">
+            Сақтау
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYSTEM -->
+  <div id="tab-system" class="tab-content">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Деректер басқару</p>
+        <div class="flex flex-col gap-3">
+          <button onclick="exportAll()" class="w-full px-4 py-3 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 font-medium text-sm flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">download</span>Барлық деректерді экспорт (JSON)
+          </button>
+          <button onclick="exportCSV()" class="w-full px-4 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium text-sm flex items-center gap-2 transition">
+            <span class="material-symbols-outlined text-base">table_view</span>Оқиғаларды CSV экспорт
+          </button>
+          <div class="border-t border-gray-100 pt-3 mt-1">
+            <p class="text-xs font-semibold text-red-400 uppercase mb-2">Қауіпті аймақ</p>
+            <button onclick="clearIncidents()" class="w-full px-4 py-3 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 font-medium text-sm flex items-center gap-2 transition">
+              <span class="material-symbols-outlined text-base">delete_sweep</span>Барлық оқиғаларды тазалау
+            </button>
+            <button onclick="resetAll()" class="w-full mt-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-medium text-sm flex items-center gap-2 transition">
+              <span class="material-symbols-outlined text-base">refresh</span>Жүйені толық қайта орнату
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card rounded-xl border border-white/60 shadow-sm p-6">
+        <p class="section-title">Жүйе ақпараты</p>
+        <div class="flex flex-col gap-3 text-sm" id="sysInfo"></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+window.SafetyVision?.auth?.requireRole?.("operator");
+
+const SETTINGS_KEY = "sv_settings";
+
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}"); } catch { return {}; }
+}
+function saveSettings(patch) {
+  const s = {...loadSettings(), ...patch};
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+}
+
+// Tabs
+function switchTab(name, btn) {
+  document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+name).classList.add("active");
+  btn.classList.add("active");
+}
+
+// Sound volume display
+document.getElementById("soundVolume")?.addEventListener("input", function() {
+  document.getElementById("volumeVal").textContent = this.value;
+});
+
+// Save handlers
+function saveGeneral() {
+  saveSettings({
+    sysName: document.getElementById("sysName").value,
+    siteName: document.getElementById("siteName").value,
+    lang: document.getElementById("lang").value,
+    timezone: document.getElementById("timezone").value,
+  });
+  window.SafetyVision.toast("Жалпы баптаулар сақталды ✓","success");
+}
+
+function saveCameraSettings() {
+  saveSettings({
+    videoQuality: document.getElementById("videoQuality").value,
+    fps: document.getElementById("fps").value,
+    retentionDays: document.getElementById("retentionDays").value,
+    autoRecord: document.getElementById("autoRecord").checked,
+  });
+  window.SafetyVision.toast("Камера баптаулары сақталды ✓","success");
+}
+
+function saveNotifications() {
+  saveSettings({
+    notifBrowser: document.getElementById("notifBrowser").checked,
+    notifSound: document.getElementById("notifSound").checked,
+    notifEmail: document.getElementById("notifEmail").checked,
+    alertLevel: document.getElementById("alertLevel").value,
+    alertEmail: document.getElementById("alertEmail").value,
+    soundVolume: document.getElementById("soundVolume").value,
+  });
+  window.SafetyVision.toast("Хабарландыру баптаулары сақталды ✓","success");
+}
+
+function saveSecurity() {
+  saveSettings({
+    sessionTimeout: document.getElementById("sessionTimeout").value,
+    autoLogout: document.getElementById("autoLogout").checked,
+    loginLog: document.getElementById("loginLog").checked,
+  });
+  window.SafetyVision.toast("Қауіпсіздік баптаулары сақталды ✓","success");
+}
+
+function saveAI() {
+  saveSettings({
+    aiConfidence: document.getElementById("aiConfidence").value,
+    detectHelmet: document.getElementById("detectHelmet").checked,
+    detectVest: document.getElementById("detectVest").checked,
+    detectZone: document.getElementById("detectZone").checked,
+  });
+  window.SafetyVision.toast("AI баптаулары сақталды ✓","success");
+}
+
+function testNotification() {
+  if (Notification.permission === "granted") {
+    new Notification("ҚауіпсіздікКөзі — Тест", { body:"Хабарландыру жүйесі жұмыс істейді ✓", icon:"" });
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(p => {
+      if (p==="granted") new Notification("ҚауіпсіздікКөзі — Тест", { body:"Хабарландыру жұмыс істейді ✓" });
+    });
+  }
+  window.SafetyVision.toast("Тест хабарландыру жіберілді","info");
+}
+
+function exportAll() {
+  const data = {
+    users:     window.SafetyVision.users.getAll(),
+    incidents: window.SafetyVision.incidents.getAll(),
+    cameras:   JSON.parse(localStorage.getItem("sv_cameras")||"[]"),
+    settings:  loadSettings(),
+    exportedAt: new Date().toISOString(),
+  };
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
+  a.download = "safety_vision_backup_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  window.SafetyVision.toast("JSON backup жүктелуде...","success");
+}
+
+function exportCSV() {
+  const all = window.SafetyVision.incidents.getAll();
+  const h = ["id","date","type","severity","location","status","note"];
+  const csv = h.join(",") + "\n" + all.map(it=>h.map(k=>`"${(it[k]||"").toString().replaceAll('"','""')}"`).join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}));
+  a.download = "incidents_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+  window.SafetyVision.toast("CSV жүктелуде...","success");
+}
+
+function clearIncidents() {
+  if (!confirm("Барлық оқиғаларды жоясыз ба? Бұл қайтарылмайды!")) return;
+  localStorage.removeItem("sv_incidents");
+  window.SafetyVision.toast("Барлық оқиғалар тазаланды","warning");
+}
+
+function resetAll() {
+  if (!confirm("Жүйені толық қайта орнатасыз ба? Барлық деректер жойылады!")) return;
+  ["sv_users","sv_incidents","sv_cameras","sv_settings"].forEach(k=>localStorage.removeItem(k));
+  window.SafetyVision.toast("Жүйе тазаланды, қайта жаңарады...","info");
+  setTimeout(()=>location.reload(),1500);
+}
+
+function renderSysInfo() {
+  const incidents = window.SafetyVision.incidents.getAll();
+  const users     = window.SafetyVision.users.getAll();
+  const cameras   = JSON.parse(localStorage.getItem("sv_cameras")||"[]");
+  const rows = [
+    ["Жүйе нұсқасы","v2.0 (1-Кезең)"],
+    ["Пайдаланушылар", users.length + " адам"],
+    ["Оқиғалар", incidents.length + " жазба"],
+    ["Камералар", cameras.length + " камера"],
+    ["localStorage өлшемі", (() => {
+      let size = 0;
+      for (let k in localStorage) size += (localStorage[k]||"").length;
+      return (size/1024).toFixed(1) + " KB";
+    })()],
+    ["Браузер", navigator.userAgent.split(" ").slice(-1)[0]],
+    ["Платформа", navigator.platform],
+  ];
+  document.getElementById("sysInfo").innerHTML = rows.map(([k,v])=>
+    `<div class="flex justify-between py-2 border-b border-gray-100 last:border-0">
+      <span class="text-gray-400">${k}</span>
+      <span class="font-semibold text-gray-700">${v}</span>
+    </div>`).join("");
+}
+
+// Load saved settings to UI
+function applySettings() {
+  const s = loadSettings();
+  if (s.sysName) document.getElementById("sysName").value = s.sysName;
+  if (s.siteName) document.getElementById("siteName").value = s.siteName;
+  if (s.alertEmail) document.getElementById("alertEmail").value = s.alertEmail;
+  if (s.soundVolume) {
+    document.getElementById("soundVolume").value = s.soundVolume;
+    document.getElementById("volumeVal").textContent = s.soundVolume;
+  }
+  if (s.aiConfidence) document.getElementById("aiConfidence").value = s.aiConfidence;
+  if (s.notifBrowser !== undefined) document.getElementById("notifBrowser").checked = s.notifBrowser;
+  if (s.notifSound   !== undefined) document.getElementById("notifSound").checked   = s.notifSound;
+  if (s.detectHelmet !== undefined) document.getElementById("detectHelmet").checked = s.detectHelmet;
+  if (s.detectVest   !== undefined) document.getElementById("detectVest").checked   = s.detectVest;
+  if (s.detectZone   !== undefined) document.getElementById("detectZone").checked   = s.detectZone;
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  applySettings();
+  renderSysInfo();
+});
+</script>
+</body>
+</html>

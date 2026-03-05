@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кіру — ҚауіпсіздікКөзі</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1a6fc4",
+            primaryHover: "#155fa8",
+            accent: "#00C2D1",
+            sidebarFrom: "#1e5fa3",
+            sidebarTo: "#2980d9",
+          },
+          fontFamily: { display: ["Public Sans", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+    .form-hidden { display: none !important; }
+    .sidebar-gradient { background: linear-gradient(135deg, #1e5fa3 0%, #2980d9 60%, #42a5f5 100%); }
+    .page-bg { background: #f4f8ff; }
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #2980d9, transparent 70%);
+      top: -200px; right: -100px;
+      opacity: 0.12;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #42a5f5, transparent 70%);
+      bottom: 20%; left: -100px;
+      opacity: 0.08;
+    }
+    .glass-card { background: rgba(255,255,255,0.88); backdrop-filter: blur(12px); }
+  </style>
+</head>
+
+<body class="font-display page-bg min-h-screen">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="flex min-h-screen" style="position:relative;z-index:1;">
+    <div class="flex w-full flex-col lg:flex-row">
+
+      <!-- Сол жақ панель -->
+      <div class="sidebar-gradient relative hidden lg:flex flex-1 flex-col items-center justify-center p-12 text-white overflow-hidden">
+        <div class="absolute top-[-80px] right-[-80px] w-72 h-72 rounded-full bg-white/10 blur-3xl"></div>
+        <div class="absolute bottom-[-60px] left-[-60px] w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+        <div class="absolute inset-0 bg-black/10"></div>
+        <img
+          class="absolute inset-0 h-full w-full object-cover opacity-20"
+          alt="Технология фоны"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXF-eDxAqsCdRpjHOkRwAa0n-mcpOeoym7zxatcdrh8whnxJk13diG_gT8r54XSjgdkTQxnHRnf4F5JHRo1eL30DuLvIGU_pU2gbG2h31gx-QbP-0bcqFBRxbVWa4skXm8Zy8EfYzIW1fiD9a_Ne9ajtTS8fKPzy2GY7wEUa6cRt7ShU880VwWcxg0AN7n_XLcHh4Y5-aoQmjomYsZ3-beOo3ThMghSCBcfx6mig4io32uKVzU1J3whkxvMU4hoWS-ZKx1kHmQh__v"
+        />
+
+        <div class="relative z-10 flex flex-col items-center text-center gap-6">
+          <div class="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-5xl text-white">shield</span>
+          </div>
+
+          <div>
+            <h2 class="text-4xl font-bold mb-3 tracking-tight">ҚауіпсіздікКөзі</h2>
+            <p class="text-xl font-light text-white/90 mb-2">AI қуаты бар қауіпсіздік жүйесі</p>
+            <p class="max-w-sm text-base text-white/75 leading-relaxed">
+              Нақты уақыттағы мониторинг, оқиғаларды бақылау және аналитика — барлығы бір платформада.
+            </p>
+          </div>
+
+          <!-- Суреттегідей 3 блок -->
+          <div class="flex flex-col gap-3 mt-4 w-full max-w-xs">
+            <div class="flex items-center gap-3 bg-white/15 rounded-xl px-4 py-3">
+              <span class="material-symbols-outlined text-white/90">videocam</span>
+              <span class="text-sm text-white/90">Тікелей камера мониторингі</span>
+            </div>
+            <div class="flex items-center gap-3 bg-white/15 rounded-xl px-4 py-3">
+              <span class="material-symbols-outlined text-white/90">notifications_active</span>
+              <span class="text-sm text-white/90">Нақты уақытта ескертулер</span>
+            </div>
+            <div class="flex items-center gap-3 bg-white/15 rounded-xl px-4 py-3">
+              <span class="material-symbols-outlined text-white/90">analytics</span>
+              <span class="text-sm text-white/90">Оқиғалар аналитикасы</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Оң жақ панель -->
+      <div class="flex w-full flex-1 items-center justify-center p-6 sm:p-8 lg:p-12">
+        <div class="w-full max-w-md">
+
+          <!-- КІРУ -->
+          <div id="loginPanel" class="glass-card rounded-2xl shadow-xl p-8 border border-white/60">
+            <header class="mb-7 flex flex-col items-center text-center lg:items-start lg:text-left">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl sidebar-gradient flex items-center justify-center shadow">
+                  <span class="material-symbols-outlined text-xl text-white">shield</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">ҚауіпсіздікКөзі</span>
+              </div>
+              <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Қош келдіңіз!</h1>
+              <p class="mt-2 text-gray-500 text-sm">Басқару тақтасына кіру үшін деректеріңізді енгізіңіз.</p>
+            </header>
+
+            <form id="loginForm" class="flex w-full flex-col gap-4">
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Пайдаланушы аты</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">person</span>
+                  <input id="login-username"
+                    class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 pl-11 text-base text-gray-800
+                           placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    placeholder="Пайдаланушы атын енгізіңіз" />
+                </div>
+              </label>
+
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Құпия сөз</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">lock</span>
+                  <input id="login-password"
+                    class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 px-11 text-base text-gray-800
+                           placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    placeholder="Құпия сөзіңізді енгізіңіз" type="password" />
+                  <button id="toggleLoginPassword" class="absolute right-3.5 text-gray-400 hover:text-gray-600 transition" type="button">
+                    <span class="material-symbols-outlined text-xl">visibility_off</span>
+                  </button>
+                </div>
+              </label>
+
+              <!-- Есте сақтау алып тасталды -->
+              <div class="flex justify-end">
+                <a id="showForgotPassword" class="text-sm text-primary hover:text-primaryHover hover:underline cursor-pointer transition">
+                  Құпия сөзді ұмыттыңыз ба?
+                </a>
+              </div>
+
+              <button type="submit"
+                class="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-xl sidebar-gradient px-6
+                       text-base font-semibold text-white transition hover:opacity-90
+                       focus:outline-none focus:ring-2 focus:ring-primary/30 shadow">
+                <span class="material-symbols-outlined text-xl">login</span>
+                Кіру
+              </button>
+            </form>
+
+            <div class="mt-5 text-center text-sm">
+              <p class="text-gray-500">
+                Аккаунтыңыз жоқ па?
+                <a id="showRegister" class="text-primary hover:text-primaryHover hover:underline cursor-pointer font-semibold">Тіркелу</a>
+              </p>
+            </div>
+
+            <!-- Демо ақпарат толық алынып тасталды -->
+
+            <footer class="mt-6 text-center text-xs text-gray-400">
+              <div class="flex items-center justify-center gap-3 mb-1">
+                <a class="hover:text-primary hover:underline transition" href="#">Қолдау</a>
+                <span>·</span>
+                <a class="hover:text-primary hover:underline transition" href="#">Құпиялылық</a>
+              </div>
+              <p>© 2024 ҚауіпсіздікКөзі ЖШС</p>
+            </footer>
+          </div>
+
+          <!-- ТІРКЕЛУ -->
+          <div id="registerPanel" class="glass-card rounded-2xl shadow-xl p-8 border border-white/60 form-hidden">
+            <header class="mb-7">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl sidebar-gradient flex items-center justify-center shadow">
+                  <span class="material-symbols-outlined text-xl text-white">shield</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">ҚауіпсіздікКөзі</span>
+              </div>
+              <h1 class="text-2xl font-bold text-gray-800">Жаңа аккаунт жасау</h1>
+              <p class="mt-1 text-gray-500 text-sm">Деректеріңізді толтырыңыз.</p>
+            </header>
+
+            <form id="registerForm" class="flex w-full flex-col gap-4">
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Толық аты-жөні</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">badge</span>
+                  <input id="register-fullname" class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 pl-11 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="мысалы, Айдана Сейтқали" />
+                </div>
+              </label>
+
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Email</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">mail</span>
+                  <input id="register-email" type="email" class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 pl-11 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="email@example.com" />
+                </div>
+              </label>
+
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Пайдаланушы аты</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">person</span>
+                  <input id="register-username" class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 pl-11 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="пайдаланушы_аты" />
+                </div>
+              </label>
+
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Құпия сөз</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">lock</span>
+                  <input id="register-password" type="password" class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 px-11 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="Кемінде 6 таңба" />
+                  <button id="toggleRegisterPassword" class="absolute right-3.5 text-gray-400" type="button">
+                    <span class="material-symbols-outlined text-xl">visibility_off</span>
+                  </button>
+                </div>
+              </label>
+
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Құпия сөзді растаңыз</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">lock</span>
+                  <input id="register-confirm-password" type="password" class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 px-11 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="Құпия сөзді қайталаңыз" />
+                  <button id="toggleConfirmPassword" class="absolute right-3.5 text-gray-400" type="button">
+                    <span class="material-symbols-outlined text-xl">visibility_off</span>
+                  </button>
+                </div>
+              </label>
+
+              <button type="submit"
+                class="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-xl sidebar-gradient px-6 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/30 shadow">
+                <span class="material-symbols-outlined text-xl">person_add</span>
+                Тіркелу
+              </button>
+            </form>
+
+            <div class="mt-5 text-center text-sm">
+              <p class="text-gray-500">Аккаунтыңыз бар ма? <a id="showLoginFromRegister" class="text-primary hover:underline cursor-pointer font-semibold">Кіру</a></p>
+            </div>
+          </div>
+
+          <!-- ҚҰПИЯ СӨЗ -->
+          <div id="forgotPasswordPanel" class="glass-card rounded-2xl shadow-xl p-8 border border-white/60 form-hidden">
+            <header class="mb-7">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl sidebar-gradient flex items-center justify-center shadow">
+                  <span class="material-symbols-outlined text-xl text-white">shield</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">ҚауіпсіздікКөзі</span>
+              </div>
+              <h1 class="text-2xl font-bold text-gray-800">Құпия сөзді қалпына келтіру</h1>
+              <p class="mt-1 text-gray-500 text-sm">Email мекенжайыңызға сілтеме жібереміз.</p>
+            </header>
+
+            <form id="forgotPasswordForm" class="flex w-full flex-col gap-4">
+              <div class="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-xl p-3">
+                <span class="material-symbols-outlined text-sm align-middle mr-1">info</span>
+                Email мекенжайыңызды енгізіңіз, сілтеме жіберіледі.
+              </div>
+              <label class="flex flex-col">
+                <p class="pb-1.5 text-sm font-medium text-gray-600">Email мекенжайы</p>
+                <div class="relative flex w-full items-center">
+                  <span class="material-symbols-outlined absolute left-3.5 text-gray-400 text-xl">mail</span>
+                  <input id="forgot-email" type="email" class="form-input h-12 w-full rounded-xl border border-gray-200 bg-white p-3 pl-11 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="email@example.com" />
+                </div>
+              </label>
+              <button type="submit"
+                class="flex h-12 w-full items-center justify-center gap-2 rounded-xl sidebar-gradient px-6 text-base font-semibold text-white transition hover:opacity-90 shadow">
+                <span class="material-symbols-outlined text-xl">send</span>
+                Сілтеме жіберу
+              </button>
+            </form>
+
+            <div class="mt-5 text-center text-sm">
+              <a id="showLoginFromForgot" class="text-primary hover:underline cursor-pointer font-medium inline-flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Кіруге оралу
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginPanel = document.getElementById("loginPanel");
+    const registerPanel = document.getElementById("registerPanel");
+    const forgotPasswordPanel = document.getElementById("forgotPasswordPanel");
+
+    document.getElementById("showRegister").addEventListener("click", () => {
+      loginPanel.classList.add("form-hidden");
+      registerPanel.classList.remove("form-hidden");
+      forgotPasswordPanel.classList.add("form-hidden");
+    });
+    document.getElementById("showLoginFromRegister").addEventListener("click", () => {
+      loginPanel.classList.remove("form-hidden");
+      registerPanel.classList.add("form-hidden");
+      forgotPasswordPanel.classList.add("form-hidden");
+    });
+    document.getElementById("showForgotPassword").addEventListener("click", () => {
+      loginPanel.classList.add("form-hidden");
+      registerPanel.classList.add("form-hidden");
+      forgotPasswordPanel.classList.remove("form-hidden");
+    });
+    document.getElementById("showLoginFromForgot").addEventListener("click", () => {
+      loginPanel.classList.remove("form-hidden");
+      registerPanel.classList.add("form-hidden");
+      forgotPasswordPanel.classList.add("form-hidden");
+    });
+
+    function bindToggle(btnId, inputId) {
+      const btn = document.getElementById(btnId);
+      const input = document.getElementById(inputId);
+      if (!btn || !input) return;
+      btn.addEventListener("click", () => {
+        const icon = btn.querySelector(".material-symbols-outlined");
+        const hidden = input.type === "password";
+        input.type = hidden ? "text" : "password";
+        icon.textContent = hidden ? "visibility" : "visibility_off";
+      });
+    }
+    bindToggle("toggleLoginPassword", "login-password");
+    bindToggle("toggleRegisterPassword", "register-password");
+    bindToggle("toggleConfirmPassword", "register-confirm-password");
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+      if (!username || !password) { alert("Пайдаланушы аты мен құпия сөзді енгізіңіз"); return; }
+
+      const res = window.SafetyVision?.auth?.login
+        ? window.SafetyVision.auth.login(username, password)
+        : { ok: false, message: "navigation.js қосылмаған" };
+
+      if (!res.ok) { alert(res.message || "Кіру мүмкін болмады"); return; }
+      window.location.href = "dashboard.html";
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fullname = document.getElementById("register-fullname").value.trim();
+      const email = document.getElementById("register-email").value.trim();
+      const username = document.getElementById("register-username").value.trim();
+      const password = document.getElementById("register-password").value;
+      const confirm = document.getElementById("register-confirm-password").value;
+
+      if (!fullname || !email || !username || !password || !confirm) return alert("Барлық өрістерді толтырыңыз");
+      if (password !== confirm) return alert("Құпия сөздер сәйкес келмейді");
+      if (password.length < 6) return alert("Құпия сөз кемінде 6 таңбадан тұруы керек");
+
+      alert("Тіркелу сәтті өтті! Енді жүйеге кіре аласыз.");
+      loginPanel.classList.remove("form-hidden");
+      registerPanel.classList.add("form-hidden");
+      document.getElementById("login-username").value = username;
+    });
+
+    document.getElementById("forgotPasswordForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("forgot-email").value.trim();
+      if (!email) return alert("Email мекенжайын енгізіңіз");
+      alert("Сілтеме жіберілді: " + email);
+      loginPanel.classList.remove("form-hidden");
+      forgotPasswordPanel.classList.add("form-hidden");
+    });
+  </script>
+
+  <script src="navigation.js"></script>
+</body>
+</html>
