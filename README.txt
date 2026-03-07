@@ -1,5 +1,5 @@
-Бұл нұсқада video тоқтап тұрған кезде міндетті түрде көрінуі үшін poster сурет <img> ретінде бөлек қойылды.
-Hover болғанда video үстіне шығып ойнайды, mouse шыққанда тоқтайды және қайта жасырылады.
+﻿Use Live Server (or any static server) to open:
+- frontend/index.html
 
-Қосу:
-- VS Code -> Live Server -> index.html
+Backend API runs from:
+- backend/main.py

@@ -1,5 +1,5 @@
 """
-app.py — ҚауіпсіздікКөзі | Flask + YOLOv8  v5.0
+main.py — ҚауіпсіздікКөзі | Flask + YOLOv8  v5.0
 ══════════════════════════════════════════════════
 Іске қосу:
     pip install flask flask-cors opencv-python ultralytics numpy

@@ -51,7 +51,7 @@ def download():
         mb = os.path.getsize(SAVE_PATH) / 1024 / 1024
         print(f"✅ Модель бұрыннан бар ({mb:.1f} MB):")
         print(f"   {SAVE_PATH}")
-        print(f"\napp.py іске қосыңыз: python app.py")
+        print(f"\nmain.py іске қосыңыз: python main.py")
         return True
 
     print("═" * 55)
@@ -75,7 +75,7 @@ def download():
             print(f"\n✅ Жүктелді! ({mb:.1f} MB)")
             print(f"   Сақталды: {SAVE_PATH}")
             print(f"\n🚀 Енді іске қосыңыз:")
-            print(f"   python app.py")
+            print(f"   python main.py")
             return True
 
         except Exception as e:
