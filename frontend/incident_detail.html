@@ -40,6 +40,22 @@
   textarea:focus,select:focus,input:focus{border-color:#1a6fc4}
   .timeline-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
   .status-chip{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+  .print-document{display:none;max-width:780px;margin:0 auto}
+  .print-title{font-size:24px;font-weight:800;text-align:center;margin-bottom:16px}
+  .print-image-wrap{display:flex;justify-content:center;align-items:center;margin-bottom:18px}
+  .print-image{max-width:520px;width:min(92%,520px);height:auto;border:1px solid #d1d5db;border-radius:10px}
+  .print-subtitle{font-size:18px;font-weight:700;margin-bottom:10px}
+  .print-details{border:1px solid #e5e7eb;border-radius:10px;padding:14px}
+  .print-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed #e5e7eb;padding:8px 0;font-size:14px}
+  .print-row:last-child{border-bottom:none}
+  .print-label{color:#4b5563;font-weight:600}
+  .print-value{text-align:right;color:#111827;font-weight:700}
+  @page{size:A4;margin:14mm}
+  @media print{
+    body{background:#fff !important}
+    body > *:not(.print-document){display:none !important}
+    .print-document{display:block !important;color:#111827;font-family:"Public Sans",sans-serif}
+  }
 </style>
 </head>
 <body class="font-display main-bg">
@@ -96,7 +112,7 @@
       <p class="text-gray-400 text-sm mt-0.5" id="detailDate">—</p>
     </div>
     <div class="flex gap-2">
-      <button onclick="window.print()" class="btn-ghost text-sm">
+      <button onclick="printIncidentDocument()" class="btn-ghost text-sm">
         <span class="material-symbols-outlined text-base">print</span>Басып шығару
       </button>
       <button onclick="confirmDelete()" class="btn-danger text-sm">
@@ -239,6 +255,24 @@
 </main>
 </div>
 
+<div class="print-document" id="printDocument">
+  <h1 class="print-title">Қауіпсіздік ережесі бойынша ескертпе</h1>
+  <div class="print-image-wrap">
+    <img id="printSnapshot" class="print-image" alt="Оқиға кадры"/>
+  </div>
+  <div class="print-details">
+    <h2 class="print-subtitle">Оқиға мәліметтері</h2>
+    <div class="print-row"><span class="print-label">Құжат құрылған уақыты</span><span class="print-value" id="printGeneratedAt">—</span></div>
+    <div class="print-row"><span class="print-label">Оқиға ID</span><span class="print-value" id="printId">—</span></div>
+    <div class="print-row"><span class="print-label">Оқиға түрі</span><span class="print-value" id="printType">—</span></div>
+    <div class="print-row"><span class="print-label">Орны / Камера</span><span class="print-value" id="printLocation">—</span></div>
+    <div class="print-row"><span class="print-label">Анықталған уақыты</span><span class="print-value" id="printDate">—</span></div>
+    <div class="print-row"><span class="print-label">Маңыздылығы</span><span class="print-value" id="printSeverity">—</span></div>
+    <div class="print-row"><span class="print-label">Мәртебесі</span><span class="print-value" id="printStatus">—</span></div>
+    <div class="print-row"><span class="print-label">Ескерту</span><span class="print-value" id="printNote">—</span></div>
+  </div>
+</div>
+
 <script src="navigation.js"></script>
 <script>
 window.SafetyVision?.auth?.requireRole?.("operator");
@@ -269,6 +303,57 @@ const stsBadge = s => s==="Resolved"
   : s==="Investigating"
   ? `<span class="status-chip bg-blue-100 text-blue-600"><span class="material-symbols-outlined" style="font-size:14px">search</span>Тексерілуде</span>`
   : `<span class="status-chip bg-red-50 text-red-500"><span class="material-symbols-outlined" style="font-size:14px">error</span>Ашық</span>`;
+
+const sevText = s => s==="high" ? "Жоғары" : s==="low" ? "Төмен" : "Орташа";
+const stsText = s => s==="Resolved" ? "Шешілді" : s==="Investigating" ? "Тексерілуде" : "Ашық";
+const docCreatedAt = () => {
+  const now = new Date();
+  return now.toLocaleDateString("kk-KZ") + " " +
+         now.toLocaleTimeString("kk-KZ", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+};
+const formatDetectedAt = (value) => {
+  if (!value) return "—";
+  const text = String(value).trim();
+  const isoMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+  if (isoMatch) {
+    const [, year, month, day, hh = "00", mm = "00"] = isoMatch;
+    return `${day}.${month}.${year} ${hh}:${mm}`;
+  }
+  const parsed = new Date(text);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toLocaleDateString("kk-KZ") + " " +
+           parsed.toLocaleTimeString("kk-KZ", {hour:"2-digit", minute:"2-digit"});
+  }
+  return text;
+};
+
+function preparePrintDocument(it) {
+  const fallbackImg = it.severity==="high" ? CAM_IMGS.alert : CAM_IMGS.warning;
+  const snapshotSrc = it.snapshot_b64 || fallbackImg;
+  const set = (id, value) => { document.getElementById(id).textContent = value || "—"; };
+
+  document.getElementById("printSnapshot").src = snapshotSrc;
+  set("printGeneratedAt", docCreatedAt());
+  set("printId", `#${it.id || ""}`);
+  set("printType", it.type);
+  set("printLocation", `${it.location || "—"} / ${it.camera || "—"}`);
+  set("printDate", formatDetectedAt(it.date));
+  set("printSeverity", sevText(it.severity));
+  set("printStatus", stsText(it.status));
+  set("printNote", it.note || "Ескерту жазылмаған");
+}
+
+function printIncidentDocument() {
+  if (!incident) return;
+  preparePrintDocument(incident);
+  const img = document.getElementById("printSnapshot");
+  if (img.complete) {
+    window.print();
+    return;
+  }
+  img.onload = () => { img.onload = null; window.print(); };
+  img.onerror = () => { img.onerror = null; window.print(); };
+}
 
 function renderPage(it) {
   // Header
@@ -317,6 +402,9 @@ function renderPage(it) {
 
   // Related
   renderRelated(it);
+
+  // Print document
+  preparePrintDocument(it);
 }
 
 function renderTimeline(it) {
