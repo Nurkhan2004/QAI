@@ -1,5 +1,5 @@
-// navigation.js — ҚауіпсіздікКөзі RBAC + Auth + Demo Seed + Toast
-// v2.0 — 1-Кезең
+// navigation.js - SafetyVision RBAC + Auth + Seed + Toast
+// v2.0
 
 (function () {
   "use strict";
@@ -7,16 +7,53 @@
   const USERS_KEY     = "sv_users";
   const INCIDENTS_KEY = "sv_incidents";
   const CAMERAS_KEY   = "sv_cameras";
+  const AUTH_TOKEN_KEY = "sv_auth_token";
+  const LOGIN_PASSWORD_KEY = "sv_login_password";
+  const DEMO_PASSWORDS = {
+    admin: "admin123",
+    operator: "op123",
+    operator2: "op456",
+  };
+  const API_BASE = (() => {
+    const custom = window.SAFETYVISION_API_BASE || localStorage.getItem("sv_api_base");
+    if (custom) return String(custom).replace(/\/+$/, "");
+    const host = window.location.hostname || "localhost";
+    return `http://${host}:8000`;
+  })();
 
-  // ─────────────────────────────────────────────
-  // 1. DEMO SEED — бір рет инициализация
-  // ─────────────────────────────────────────────
+  function getToken() {
+    return sessionStorage.getItem(AUTH_TOKEN_KEY) || "";
+  }
+  function setToken(token) {
+    if (token) {
+      sessionStorage.setItem(AUTH_TOKEN_KEY, token);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    } else {
+      sessionStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
+  }
+  function authHeader() {
+    const t = getToken();
+    return t ? { Authorization: `Bearer ${t}` } : {};
+  }
+  async function apiFetch(path, options = {}) {
+    const opts = { ...options };
+    opts.headers = { ...(options.headers || {}), ...authHeader() };
+    const m = String(opts.method || "GET").toUpperCase();
+    if (opts.body && !(opts.body instanceof FormData) && !opts.headers["Content-Type"] && m !== "GET") {
+      opts.headers["Content-Type"] = "application/json";
+    }
+    return fetch(API_BASE + path, opts);
+  }
+
+  // 1. Demo seed
   function initUsersIfEmpty() {
     if (localStorage.getItem(USERS_KEY)) return;
     const demoUsers = [
-      { id: "u1", username: "admin",    password: "admin123", fullName: "Алмас Беков",    role: "admin",    email: "admin@safety.kz",    createdAt: "2024-01-10" },
-      { id: "u2", username: "operator", password: "op123",    fullName: "Дина Сейткали",  role: "operator", email: "dina@safety.kz",      createdAt: "2024-02-15" },
-      { id: "u3", username: "operator2",password: "op456",    fullName: "Серік Жаксыбек", role: "operator", email: "serik@safety.kz",     createdAt: "2024-03-20" },
+      { id: "u1", username: "admin",    fullName: "Almas Bekov",       role: "admin",    email: "admin@safety.kz", createdAt: "2024-01-10" },
+      { id: "u2", username: "operator", fullName: "Dina Seitkali",     role: "operator", email: "dina@safety.kz",  createdAt: "2024-02-15" },
+      { id: "u3", username: "operator2",fullName: "Serik Zhaksybek",   role: "operator", email: "serik@safety.kz", createdAt: "2024-03-20" },
     ];
     localStorage.setItem(USERS_KEY, JSON.stringify(demoUsers));
   }
@@ -26,18 +63,18 @@
     const now = Date.now();
     const day = 86400000;
     const demoIncidents = [
-      { id: "INC-0012", type: "Каска жоқ",              location: "Қойма B секциясы / Кам-03", severity: "high",   status: "Open",        camera: "CAM-03", createdAt: new Date(now - 2*60000).toISOString(),    date: fmt(now - 2*60000),    note: "" },
-      { id: "INC-0011", type: "Жақындық ескертуі",      location: "Жүктеу аймағы 1 / Кам-07",  severity: "medium", status: "Investigating",camera: "CAM-07", createdAt: new Date(now - 5*60000).toISOString(),    date: fmt(now - 5*60000),    note: "" },
-      { id: "INC-0010", type: "Қауіпсіздік жилеті жоқ", location: "Жинау желісі 2 / Кам-08",  severity: "high",   status: "Open",        camera: "CAM-08", createdAt: new Date(now - 1*3600000).toISOString(),  date: fmt(now - 1*3600000),  note: "" },
-      { id: "INC-0009", type: "Аймаққа рұқсатсыз кіру", location: "Шеткі қоршау / Кам-21",    severity: "medium", status: "Resolved",    camera: "CAM-21", createdAt: new Date(now - 3*3600000).toISOString(),  date: fmt(now - 3*3600000),  note: "Оператор тексерді" },
-      { id: "INC-0008", type: "Каска жоқ",              location: "4-сектор / Кам-12",          severity: "high",   status: "Resolved",    camera: "CAM-12", createdAt: new Date(now - 1*day).toISOString(),      date: fmt(now - 1*day),      note: "Жұмысшыға ескерту берілді" },
-      { id: "INC-0007", type: "Адам анықталды",         location: "Кіреберіс / Кам-01",         severity: "low",    status: "Resolved",    camera: "CAM-01", createdAt: new Date(now - 1*day - 2*3600000).toISOString(), date: fmt(now - 1*day - 2*3600000), note: "" },
-      { id: "INC-0006", type: "Жақындық ескертуі",      location: "Қойма A / Кам-03",           severity: "medium", status: "Resolved",    camera: "CAM-03", createdAt: new Date(now - 2*day).toISOString(),      date: fmt(now - 2*day),      note: "" },
-      { id: "INC-0005", type: "Қауіпсіздік жилеті жоқ", location: "Жинау желісі 3 / Кам-09",  severity: "high",   status: "Resolved",    camera: "CAM-09", createdAt: new Date(now - 3*day).toISOString(),      date: fmt(now - 3*day),      note: "" },
-      { id: "INC-0004", type: "Каска жоқ",              location: "Жүктеу аймағы 2 / Кам-11",  severity: "high",   status: "Resolved",    camera: "CAM-11", createdAt: new Date(now - 4*day).toISOString(),      date: fmt(now - 4*day),      note: "" },
-      { id: "INC-0003", type: "Аймаққа рұқсатсыз кіру", location: "Шеткі қоршау / Кам-21",    severity: "low",    status: "Resolved",    camera: "CAM-21", createdAt: new Date(now - 5*day).toISOString(),      date: fmt(now - 5*day),      note: "" },
-      { id: "INC-0002", type: "Жақындық ескертуі",      location: "4-сектор / Кам-12",          severity: "medium", status: "Resolved",    camera: "CAM-12", createdAt: new Date(now - 6*day).toISOString(),      date: fmt(now - 6*day),      note: "" },
-      { id: "INC-0001", type: "Каска жоқ",              location: "Қойма B секциясы / Кам-03", severity: "high",   status: "Resolved",    camera: "CAM-03", createdAt: new Date(now - 7*day).toISOString(),      date: fmt(now - 7*day),      note: "" },
+      { id: "INC-0012", type: "No Helmet",      location: "Warehouse B / CAM-03",      severity: "high",   status: "Open",         camera: "CAM-03", createdAt: new Date(now - 2*60000).toISOString(),            date: fmt(now - 2*60000),            note: "" },
+      { id: "INC-0011", type: "Safety Warning", location: "Loading Zone 1 / CAM-07",   severity: "medium", status: "Investigating", camera: "CAM-07", createdAt: new Date(now - 5*60000).toISOString(),            date: fmt(now - 5*60000),            note: "" },
+      { id: "INC-0010", type: "No Vest",        location: "Assembly Line 2 / CAM-08",  severity: "high",   status: "Open",         camera: "CAM-08", createdAt: new Date(now - 1*3600000).toISOString(),          date: fmt(now - 1*3600000),          note: "" },
+      { id: "INC-0009", type: "Zone Intrusion", location: "Perimeter / CAM-21",        severity: "medium", status: "Resolved",     camera: "CAM-21", createdAt: new Date(now - 3*3600000).toISOString(),          date: fmt(now - 3*3600000),          note: "Checked by operator" },
+      { id: "INC-0008", type: "No Helmet",      location: "Sector 4 / CAM-12",         severity: "high",   status: "Resolved",     camera: "CAM-12", createdAt: new Date(now - 1*day).toISOString(),              date: fmt(now - 1*day),              note: "Worker warned" },
+      { id: "INC-0007", type: "Person Detected",location: "Entrance / CAM-01",         severity: "low",    status: "Resolved",     camera: "CAM-01", createdAt: new Date(now - 1*day - 2*3600000).toISOString(),  date: fmt(now - 1*day - 2*3600000),  note: "" },
+      { id: "INC-0006", type: "Safety Warning", location: "Warehouse A / CAM-03",      severity: "medium", status: "Resolved",     camera: "CAM-03", createdAt: new Date(now - 2*day).toISOString(),              date: fmt(now - 2*day),              note: "" },
+      { id: "INC-0005", type: "No Vest",        location: "Assembly Line 3 / CAM-09",  severity: "high",   status: "Resolved",     camera: "CAM-09", createdAt: new Date(now - 3*day).toISOString(),              date: fmt(now - 3*day),              note: "" },
+      { id: "INC-0004", type: "No Helmet",      location: "Loading Zone 2 / CAM-11",   severity: "high",   status: "Resolved",     camera: "CAM-11", createdAt: new Date(now - 4*day).toISOString(),              date: fmt(now - 4*day),              note: "" },
+      { id: "INC-0003", type: "Zone Intrusion", location: "Perimeter / CAM-21",        severity: "low",    status: "Resolved",     camera: "CAM-21", createdAt: new Date(now - 5*day).toISOString(),              date: fmt(now - 5*day),              note: "" },
+      { id: "INC-0002", type: "Safety Warning", location: "Sector 4 / CAM-12",         severity: "medium", status: "Resolved",     camera: "CAM-12", createdAt: new Date(now - 6*day).toISOString(),              date: fmt(now - 6*day),              note: "" },
+      { id: "INC-0001", type: "No Helmet",      location: "Warehouse B / CAM-03",      severity: "high",   status: "Resolved",     camera: "CAM-03", createdAt: new Date(now - 7*day).toISOString(),              date: fmt(now - 7*day),              note: "" },
     ];
     localStorage.setItem(INCIDENTS_KEY, JSON.stringify(demoIncidents));
   }
@@ -45,14 +82,14 @@
   function initCamerasIfEmpty() {
     if (localStorage.getItem(CAMERAS_KEY)) return;
     const demoCameras = [
-      { id: "CAM-01", name: "Кіреберіс",           location: "Негізгі кіреберіс",      status: "online",  lastIncident: "2 күн бұрын" },
-      { id: "CAM-03", name: "Қойма B / Кам-03",    location: "Қойма B секциясы",        status: "alert",   lastIncident: "2 мин бұрын" },
-      { id: "CAM-07", name: "Жүктеу аймағы 1",     location: "Жүктеу аймағы 1",         status: "warning", lastIncident: "5 мин бұрын" },
-      { id: "CAM-08", name: "Жинау желісі 2",      location: "Жинау желісі 2",          status: "online",  lastIncident: "1 сағат бұрын" },
-      { id: "CAM-09", name: "Жинау желісі 3",      location: "Жинау желісі 3",          status: "online",  lastIncident: "3 күн бұрын" },
-      { id: "CAM-11", name: "Жүктеу аймағы 2",     location: "Жүктеу аймағы 2",         status: "online",  lastIncident: "4 күн бұрын" },
-      { id: "CAM-12", name: "4-сектор / Кам-12",   location: "4-сектор",                status: "online",  lastIncident: "1 күн бұрын" },
-      { id: "CAM-21", name: "Шеткі қоршау — шығыс",location: "Шеткі қоршау",            status: "offline", lastIncident: "5 күн бұрын" },
+      { id: "CAM-01", name: "Entrance",          location: "Main Entrance",      status: "online",  lastIncident: "2 days ago" },
+      { id: "CAM-03", name: "Warehouse B / 03",  location: "Warehouse B",        status: "alert",   lastIncident: "2 min ago" },
+      { id: "CAM-07", name: "Loading Zone 1",    location: "Loading Zone 1",     status: "warning", lastIncident: "5 min ago" },
+      { id: "CAM-08", name: "Assembly Line 2",   location: "Assembly Line 2",    status: "online",  lastIncident: "1 hour ago" },
+      { id: "CAM-09", name: "Assembly Line 3",   location: "Assembly Line 3",    status: "online",  lastIncident: "3 days ago" },
+      { id: "CAM-11", name: "Loading Zone 2",    location: "Loading Zone 2",     status: "online",  lastIncident: "4 days ago" },
+      { id: "CAM-12", name: "Sector 4 / CAM-12", location: "Sector 4",           status: "online",  lastIncident: "1 day ago" },
+      { id: "CAM-21", name: "Perimeter East",    location: "Perimeter",          status: "offline", lastIncident: "5 days ago" },
     ];
     localStorage.setItem(CAMERAS_KEY, JSON.stringify(demoCameras));
   }
@@ -62,9 +99,82 @@
     return d.toLocaleDateString("kk-KZ") + " " + d.toLocaleTimeString("kk-KZ", { hour: "2-digit", minute: "2-digit" });
   }
 
-  // ─────────────────────────────────────────────
-  // 2. CRUD helpers — incidents
-  // ─────────────────────────────────────────────
+  function _isMojibake(v) {
+    return /[РЃ]/.test(String(v || ""));
+  }
+
+  function repairMojibakeData() {
+    try {
+      const incidents = getIncidents().map((x) => ({
+        ...x,
+        type: _isMojibake(x.type) ? "No Helmet" : (x.type || "Incident"),
+        location: _isMojibake(x.location) ? `Camera ${x.camera || ""}`.trim() : (x.location || ""),
+        note: _isMojibake(x.note) ? "" : (x.note || ""),
+      }));
+      saveIncidents(incidents);
+    } catch {}
+
+    try {
+      const users = getUsers().map((u) => ({
+        ...u,
+        fullName: _isMojibake(u.fullName) ? (u.username || "User") : (u.fullName || u.username || "User"),
+      }));
+      saveUsers(users);
+    } catch {}
+
+    try {
+      const cams = JSON.parse(localStorage.getItem(CAMERAS_KEY) || "[]").map((c) => ({
+        ...c,
+        name: _isMojibake(c.name) ? (c.id || "Camera") : (c.name || c.id || "Camera"),
+        location: _isMojibake(c.location) ? "" : (c.location || ""),
+        lastIncident: _isMojibake(c.lastIncident) ? "" : (c.lastIncident || ""),
+      }));
+      localStorage.setItem(CAMERAS_KEY, JSON.stringify(cams));
+    } catch {}
+
+    try {
+      const acts = getActivities().map((a) => ({
+        ...a,
+        title: _isMojibake(a.title) ? "Оқиға тіркелді" : (a.title || "Оқиға"),
+        desc: _isMojibake(a.desc) ? "" : (a.desc || ""),
+      }));
+      saveActivities(acts);
+    } catch {}
+  }
+
+  async function hydrateFromBackend() {
+    if (!getToken()) return false;
+    try {
+      const r = await apiFetch("/api/bootstrap");
+      if (r.status === 401) {
+        setToken("");
+        sessionStorage.clear();
+        return false;
+      }
+      if (!r.ok) return false;
+      const data = await r.json();
+      if (!data?.ok) return false;
+
+      if (data.user) setSessionUser(data.user);
+      if (Array.isArray(data.incidents)) localStorage.setItem(INCIDENTS_KEY, JSON.stringify(data.incidents));
+      if (Array.isArray(data.cameras)) localStorage.setItem(CAMERAS_KEY, JSON.stringify(data.cameras));
+
+      if (Array.isArray(data.users)) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(data.users));
+      } else if (data.user) {
+        const users = getUsers();
+        const idx = users.findIndex(u => u.id === data.user.id);
+        if (idx >= 0) users[idx] = { ...users[idx], ...data.user };
+        else users.push(data.user);
+        saveUsers(users);
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // 2. CRUD helpers - incidents
   function getIncidents() {
     try { return JSON.parse(localStorage.getItem(INCIDENTS_KEY) || "[]"); } catch { return []; }
   }
@@ -73,31 +183,33 @@
   }
   function addIncident(data) {
     const arr = getIncidents();
-    const id = "INC-" + String(arr.length + 1).padStart(4, "0");
+    const id = data.id || ("INC-" + Date.now());
     const now = new Date();
     const item = { id, ...data, createdAt: now.toISOString(), date: fmt(now.getTime()), status: data.status || "Open", note: data.note || "" };
     arr.unshift(item);
     saveIncidents(arr);
-    addActivity("Оқиға қосылды", `${id} • ${item.type||"Оқиға"} — ${item.location||""}`, item.severity === "high" ? "error" : "info");
+    apiFetch("/api/incidents", { method: "POST", body: JSON.stringify(item) }).catch(() => {});
+    addActivity("Оқиға қосылды", `${id} • ${item.type || "Оқиға"} — ${item.location || ""}`, item.severity === "high" ? "error" : "info");
     return item;
   }
   function updateIncident(id, patch) {
     const before = getIncidents().find(x => x.id === id);
     const arr = getIncidents().map(x => x.id === id ? { ...x, ...patch } : x);
     saveIncidents(arr);
+    apiFetch(`/api/incidents/${id}`, { method: "PATCH", body: JSON.stringify(patch) }).catch(() => {});
     const st = patch.status || before?.status || "";
     const title = st === "Resolved" ? "Оқиға шешілді" : st === "Investigating" ? "Тексерілуде" : "Оқиға жаңартылды";
-    addActivity(title, `${id} • ${patch.note || st || "Жаңарту"}`, st === "Resolved" ? "success" : "info");
+    const level = st === "Resolved" ? "success" : "info";
+    addActivity(title, `${id} • ${patch.note || st || "Жаңарту"}`, level);
   }
   function deleteIncident(id) {
     const before = getIncidents().find(x => x.id === id);
     saveIncidents(getIncidents().filter(x => x.id !== id));
-    addActivity("Оқиға жойылды", `${id} • ${before?.type||"Оқиға"}`, "warning");
+    apiFetch(`/api/incidents/${id}`, { method: "DELETE" }).catch(() => {});
+    addActivity("Оқиға жойылды", `${id} • ${before?.type || "Оқиға"}`, "warning");
   }
 
-  // ─────────────────────────────────────────────
-  // 3. CRUD helpers — users
-  // ─────────────────────────────────────────────
+  // 3. CRUD helpers - users
   function getUsers() {
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); } catch { return []; }
   }
@@ -105,22 +217,87 @@
   function addUser(data) {
     const arr = getUsers();
     if (arr.find(u => u.username === data.username)) return { ok: false, message: "Бұл логин бос емес" };
-    const id = "u" + (arr.length + 1);
-    arr.push({ id, ...data, createdAt: new Date().toLocaleDateString("kk-KZ") });
+
+    const tempId = "u" + Date.now();
+    const localUser = { id: tempId, ...data, createdAt: new Date().toLocaleDateString("kk-KZ") };
+    arr.push(localUser);
     saveUsers(arr);
+
+    apiFetch("/api/users", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then(async r => {
+        const d = await r.json().catch(() => ({}));
+        if (r.ok && d?.ok && d.user) {
+          const users = getUsers().map(u => u.id === tempId ? d.user : u);
+          saveUsers(users);
+        } else {
+          saveUsers(getUsers().filter(u => u.id !== tempId));
+          showToast(d?.message || "Пайдаланушыны сақтау қатесі", "error");
+        }
+      })
+      .catch(() => {
+        saveUsers(getUsers().filter(u => u.id !== tempId));
+        showToast("Сервермен байланыс жоқ", "error");
+      });
+
     return { ok: true };
   }
+
   function updateUser(id, patch) {
-    const arr = getUsers().map(u => u.id === id ? { ...u, ...patch } : u);
-    saveUsers(arr);
-  }
-  function deleteUser(id) {
-    saveUsers(getUsers().filter(u => u.id !== id));
+    const prev = getUsers();
+    saveUsers(prev.map(u => u.id === id ? { ...u, ...patch } : u));
+
+    apiFetch(`/api/users/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(patch),
+    })
+      .then(async r => {
+        const d = await r.json().catch(() => ({}));
+        if (r.ok && d?.ok && d.user) {
+          saveUsers(getUsers().map(u => u.id === id ? d.user : u));
+        } else {
+          saveUsers(prev);
+          showToast(d?.message || "Пайдаланушыны жаңарту қатесі", "error");
+        }
+      })
+      .catch(() => {
+        saveUsers(prev);
+        showToast("Сервермен байланыс жоқ", "error");
+      });
   }
 
-  // ─────────────────────────────────────────────
+  async function changePassword(userId, oldPassword, newPassword) {
+    const r = await apiFetch(`/api/users/${userId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ password: newPassword, oldPassword }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d?.ok) return { ok: false, message: d?.message || "Құпия сөз өзгермеді" };
+    if (d.user) saveUsers(getUsers().map(u => u.id === userId ? d.user : u));
+    return { ok: true };
+  }
+
+  function deleteUser(id) {
+    const prev = getUsers();
+    saveUsers(prev.filter(u => u.id !== id));
+    apiFetch(`/api/users/${id}`, { method: "DELETE" })
+      .then(async r => {
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok || !d?.ok) {
+          saveUsers(prev);
+          showToast(d?.message || "Пайдаланушыны жою қатесі", "error");
+        }
+      })
+      .catch(() => {
+        saveUsers(prev);
+        showToast("Сервермен байланыс жоқ", "error");
+      });
+  }
+
   // 4. Auth
-  // ─────────────────────────────────────────────
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
   function setSessionUser(user) {
     sessionStorage.setItem("loggedIn", "true");
     sessionStorage.setItem("username", user.username);
@@ -137,7 +314,17 @@
       id:       sessionStorage.getItem("userId") || "",
     };
   }
-  function logout() { sessionStorage.clear(); window.location.href = "login.html"; }
+  async function logout() {
+    try {
+      if (getToken()) {
+        await apiFetch("/api/auth/logout", { method: "POST" });
+      }
+    } catch { /* ignore */ }
+    setToken("");
+    sessionStorage.removeItem(LOGIN_PASSWORD_KEY);
+    sessionStorage.clear();
+    window.location.href = "login.html";
+  }
 
   const ROLE_ORDER = { viewer: 1, operator: 2, admin: 3 };
   function hasRole(userRole, req) { return (ROLE_ORDER[userRole]||0) >= (ROLE_ORDER[req]||0); }
@@ -146,9 +333,11 @@
     const user = getSessionUser();
     if (!user && !window.location.pathname.includes("login.html")) {
       window.location.href = "login.html";
+      return null;
     }
     return user;
   }
+
   function requireRole(req) {
     const user = checkAuth();
     if (!user) return;
@@ -158,9 +347,9 @@
     }
   }
 
-  // ─────────────────────────────────────────────
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
   // 5. UI role apply
-  // ─────────────────────────────────────────────
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
   function applyRoleUI() {
     const user = getSessionUser();
     if (!user) return;
@@ -176,48 +365,48 @@
     });
   }
 
-  // ─────────────────────────────────────────────
-  // 6. Login
-  // ─────────────────────────────────────────────
-  function login(username, password) {
-    initUsersIfEmpty();
-    const u = getUsers().find(x => x.username === username && x.password === password);
-    if (!u) return { ok: false, message: "Логин немесе құпия сөз қате" };
-    setSessionUser(u);
-    return { ok: true, user: u };
-  }
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
-  // ─────────────────────────────────────────────
-  // 7. Activity log + Notifications
-  // ─────────────────────────────────────────────
-  const ACTIVITY_KEY         = "sv_activity_log";
-  const ACTIVITY_SEEN_KEY    = "sv_activity_seen_at";
-  const ACTIVITY_CLEARED_KEY = "sv_activity_cleared";
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  // Activity log helpers
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  const ACTIVITY_KEY = "sv_activity_log";
+  const SEEN_KEY     = "sv_activity_seen_at";
 
   function getActivities() {
     try {
       const arr = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]");
-      return Array.isArray(arr) ? arr.sort((a, b) => new Date(b.at||0) - new Date(a.at||0)) : [];
+      if (!Array.isArray(arr)) return [];
+      return arr.sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0));
     } catch { return []; }
   }
   function saveActivities(arr) {
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(arr.slice(0, 120)));
   }
   function addActivity(title, desc, level = "info") {
-    const item = { id: "act-" + Date.now() + "-" + Math.floor(Math.random()*9999), title: title || "Әрекет", desc: desc || "", level, at: new Date().toISOString() };
-    localStorage.removeItem(ACTIVITY_CLEARED_KEY);
+    const item = {
+      id: "act-" + Date.now() + "-" + Math.floor(Math.random() * 9999),
+      title: title || "Әрекет",
+      desc: desc || "",
+      level,
+      at: new Date().toISOString(),
+    };
+    // Real action happened — allow notifications to show again
+    localStorage.removeItem("sv_activity_cleared");
     const arr = getActivities();
     arr.unshift(item);
     saveActivities(arr);
   }
+  const ACTIVITY_CLEARED_KEY = "sv_activity_cleared";
   function clearActivities() {
     localStorage.setItem(ACTIVITY_KEY, "[]");
     localStorage.setItem(ACTIVITY_CLEARED_KEY, "1");
   }
   function initActivitiesIfEmpty() {
+    // If user manually cleared notifications, do NOT re-seed
     if (localStorage.getItem(ACTIVITY_CLEARED_KEY) === "1") return;
     if (getActivities().length) return;
-    const seed = getIncidents().slice(0, 6).map(x => ({
+    const seed = getIncidents().slice(0, 8).map(x => ({
       id: "seed-" + x.id,
       title: "Оқиға тіркелді",
       desc: `${x.id} • ${x.type || "Оқиға"}`,
@@ -226,198 +415,84 @@
     }));
     if (seed.length) saveActivities(seed);
   }
-  function relTime(ts) {
-    const d = Math.max(0, Math.floor((Date.now() - new Date(ts||0).getTime()) / 1000));
+  function relativeTime(ts) {
+    const d = Math.max(0, Math.floor((Date.now() - new Date(ts || 0).getTime()) / 1000));
     if (d < 60)    return d + " сек бұрын";
-    if (d < 3600)  return Math.floor(d/60) + " мин бұрын";
-    if (d < 86400) return Math.floor(d/3600) + " сағ бұрын";
-    return Math.floor(d/86400) + " күн бұрын";
+    if (d < 3600)  return Math.floor(d / 60) + " мин бұрын";
+    if (d < 86400) return Math.floor(d / 3600) + " сағ бұрын";
+    return Math.floor(d / 86400) + " күн бұрын";
   }
 
-  // ─────────────────────────────────────────────
-  // 8. Global Topbar Injection
-  // ─────────────────────────────────────────────
-  function injectGlobalTopbar() {
-    if (document.getElementById("sv-topbar")) return;
-    if ((window.location.pathname||"").toLowerCase().includes("login.html")) return;
 
-    const u = getSessionUser();
-    const ini = u ? (u.fullName||u.username||"U").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2) : "?";
+  // 6. Login
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  async function login(username, password) {
+    initUsersIfEmpty();
+    const users = getUsers();
+    const u = users.find((x) => String(x.username || "").toLowerCase() === String(username || "").toLowerCase());
+    if (!u) return { ok: false, message: "Қате логин немесе құпия сөз" };
 
-    const pages = { "dashboard.html":"Бақылау тақтасы","cameras.html":"Камералар","incidents.html":"Оқиғалар тарихы","incident_detail.html":"Оқиға мәліметі","users.html":"Пайдаланушылар","admin_dashboard.html":"Әкімші панелі","settings.html":"Баптаулар","profile.html":"Профиль" };
-    const path  = (window.location.pathname||"").split("/").pop();
-    const pageTitle = pages[path] || "";
-
-    // Styles
-    const style = document.createElement("style");
-    style.textContent = `
-      #sv-topbar{background:#14181f;height:56px;display:flex;align-items:center;padding:0 20px;gap:16px;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:200;flex-shrink:0;font-family:'Public Sans',sans-serif;}
-      #sv-tb-search-wrap{flex:1;max-width:340px;position:relative;margin-left:auto;}
-      #sv-tb-search{width:100%;background:#f0f6ff;border:1px solid #c8ddf5;border-radius:10px;height:34px;padding:0 52px 0 34px;font-size:13px;color:#334155;outline:none;box-sizing:border-box;font-family:'Public Sans',sans-serif;}
-      #sv-tb-search:focus{border-color:#1a6fc4;box-shadow:0 0 0 3px rgba(26,111,196,0.15);}
-      #sv-tb-search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;}
-      #sv-tb-ctrlk{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#e8f0fb;border:1px solid #c8ddf5;border-radius:5px;padding:1px 6px;font-size:11px;color:#1a6fc4;font-family:monospace;line-height:18px;font-weight:500;pointer-events:none;}
-      #sv-bell-wrap{position:relative;}
-      #sv-bell-btn{width:36px;height:36px;border-radius:10px;background:#f0f6ff;border:1px solid #c8ddf5;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
-      #sv-bell-btn:hover{background:#ddeeff;border-color:#1a6fc4;}
-      #sv-bell-badge{position:absolute;top:3px;right:3px;min-width:17px;height:17px;background:#e24b4a;border-radius:50%;font-size:10px;color:#fff;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid #14181f;padding:0 3px;}
-      #sv-tb-divider{width:1px;height:22px;background:rgba(255,255,255,0.07);margin:0 6px;flex-shrink:0;}
-      #sv-tb-avatar-btn{display:flex;align-items:center;gap:9px;background:transparent;border:none;cursor:pointer;padding:4px 8px;border-radius:10px;transition:background 0.15s;}
-      #sv-tb-avatar-btn:hover{background:rgba(255,255,255,0.06);}
-      .sv-tb-avi{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#1a6fc4,#42a5f5);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:11px;font-weight:700;}
-      /* Notification panel */
-      #sv-np-overlay{display:none;position:fixed;inset:0;z-index:198;}
-      #sv-np-overlay.open{display:block;}
-      #sv-np{position:fixed;top:62px;right:16px;width:340px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:199;display:none;flex-direction:column;overflow:hidden;max-height:480px;}
-      #sv-np.open{display:flex;}
-      .sv-np-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid #f1f5f9;flex-shrink:0;}
-      .sv-np-title{font-size:14px;font-weight:600;color:#1e293b;}
-      .sv-np-actions{display:flex;gap:6px;}
-      .sv-np-btn{background:transparent;border:1px solid #e2e8f0;border-radius:7px;padding:3px 10px;font-size:12px;color:#64748b;cursor:pointer;transition:all 0.15s;font-family:'Public Sans',sans-serif;}
-      .sv-np-btn:hover{background:#f8fafc;color:#1e293b;}
-      #sv-np-list{overflow-y:auto;flex:1;}
-      .sv-np-item{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid #f8fafc;transition:background 0.12s;}
-      .sv-np-item:hover{background:#f8fafc;}
-      .sv-np-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
-      .sv-np-icon.error{background:#fef2f2;color:#dc2626;}
-      .sv-np-icon.warning{background:#fffbeb;color:#d97706;}
-      .sv-np-icon.success{background:#f0fdf4;color:#16a34a;}
-      .sv-np-icon.info{background:#eff6ff;color:#1a6fc4;}
-      .sv-np-body{flex:1;min-width:0;}
-      .sv-np-t{font-size:13px;font-weight:500;color:#1e293b;margin:0 0 2px;}
-      .sv-np-d{font-size:12px;color:#64748b;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .sv-np-m{font-size:11px;color:#94a3b8;margin:0;}
-      .sv-np-empty{padding:32px 16px;text-align:center;color:#94a3b8;font-size:13px;}
-    `;
-    document.head.appendChild(style);
-
-    // Topbar element
-    const bar = document.createElement("div");
-    bar.id = "sv-topbar";
-    bar.innerHTML = `
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-        <span style="color:#4fa3e8;font-size:13px;font-weight:600;">ҚауіпсіздікКөзі</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 3L7.5 6L4.5 9" stroke="#2e3a50" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span style="color:#8a9bb0;font-size:13px;">${pageTitle}</span>
-      </div>
-      <div id="sv-tb-search-wrap">
-        <svg id="sv-tb-search-ico" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#93b8df" stroke-width="1.4"/><path d="M10.5 10.5L13 13" stroke="#93b8df" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <input id="sv-tb-search" type="text" placeholder="Жылдам іздеу..." autocomplete="off"/>
-        <div id="sv-tb-ctrlk">Ctrl+K</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:4px;margin-left:4px;">
-        <div id="sv-bell-wrap">
-          <button id="sv-bell-btn" title="Хабарламалар">
-            <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M9 2a5.5 5.5 0 0 1 5.5 5.5v2.3l1.2 2.2H2.3L3.5 9.8V7.5A5.5 5.5 0 0 1 9 2Z" stroke="#1a6fc4" stroke-width="1.5"/><path d="M7.5 14.5a1.5 1.5 0 0 0 3 0" stroke="#1a6fc4" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-          <span id="sv-bell-badge">0</span>
-        </div>
-        <div id="sv-tb-divider"></div>
-        <button id="sv-tb-avatar-btn" title="${u ? (u.fullName||u.username) : ""}" onclick="window.location.href='profile.html'">
-          <div class="sv-tb-avi">${ini}</div>
-          <div style="text-align:left;line-height:1.3;">
-            <p data-user-name style="color:#e2e2f0;font-size:12px;font-weight:600;margin:0;">${u ? (u.fullName||u.username) : "—"}</p>
-            <p data-user-role style="color:#4a5a70;font-size:11px;margin:0;">${u?.role === "admin" ? "Administrator" : "Safety Operator"}</p>
-          </div>
-        </button>
-      </div>
-    `;
-
-    // Notification panel
-    const overlay = document.createElement("div"); overlay.id = "sv-np-overlay"; document.body.appendChild(overlay);
-    const panel = document.createElement("div"); panel.id = "sv-np";
-    panel.innerHTML = `
-      <div class="sv-np-head">
-        <span class="sv-np-title">Хабарламалар</span>
-        <div class="sv-np-actions">
-          <button class="sv-np-btn" id="sv-np-read">Барлығын оқу</button>
-          <button class="sv-np-btn" id="sv-np-clear">Тазалау</button>
-        </div>
-      </div>
-      <div id="sv-np-list"></div>
-    `;
-    document.body.appendChild(panel);
-
-    // Insert bar into layout
-    const mainEl = document.querySelector("main");
-    if (mainEl && mainEl.parentElement) {
-      const col = document.createElement("div");
-      col.style.cssText = "display:flex;flex-direction:column;flex:1;min-width:0;overflow:hidden;";
-      mainEl.parentElement.insertBefore(col, mainEl);
-      col.appendChild(bar);
-      col.appendChild(mainEl);
-    } else {
-      bar.style.cssText += ";position:fixed;top:0;left:0;right:0;";
-      document.body.prepend(bar);
+    const expected = u.password || DEMO_PASSWORDS[u.username] || "";
+    if (!expected || password !== expected) {
+      return { ok: false, message: "Қате логин немесе құпия сөз" };
     }
 
-    const ICONS = { error:"error", warning:"warning", success:"check_circle", info:"notifications" };
-    const safe  = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-    const list  = panel.querySelector("#sv-np-list");
-    const badge = bar.querySelector("#sv-bell-badge");
+    setToken(""); // backend token is not required for normal login flow
+    sessionStorage.setItem(LOGIN_PASSWORD_KEY, password);
+    setSessionUser(u);
+    return { ok: true, user: u };
+  }
 
-    function renderPanel() {
-      const items = getActivities().slice(0, 20);
-      if (!items.length) {
-        list.innerHTML = `<div class="sv-np-empty">Хабарламалар жоқ</div>`;
-        return;
+  async function ensureBackendToken(force = false) {
+    if (!force && getToken()) return { ok: true, token: getToken() };
+    if (force) setToken("");
+    const user = getSessionUser();
+    if (!user) return { ok: false, message: "not authenticated" };
+
+    const password =
+      sessionStorage.getItem(LOGIN_PASSWORD_KEY) ||
+      DEMO_PASSWORDS[user.username] ||
+      "";
+    if (!password) return { ok: false, message: "missing password for backend auth" };
+
+    try {
+      const r = await fetch(API_BASE + "/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user.username, password }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d?.ok || !d.token) {
+        return { ok: false, message: d?.message || "backend auth failed" };
       }
-      list.innerHTML = items.map(x => `
-        <div class="sv-np-item">
-          <div class="sv-np-icon ${x.level||'info'}"><span class="material-symbols-outlined" style="font-size:15px;">${ICONS[x.level]||"notifications"}</span></div>
-          <div class="sv-np-body">
-            <p class="sv-np-t">${safe(x.title)}</p>
-            <p class="sv-np-d">${safe(x.desc)}</p>
-            <p class="sv-np-m">${relTime(x.at)}</p>
-          </div>
-        </div>`).join("");
+      setToken(d.token);
+      if (d.user) setSessionUser(d.user);
+      return { ok: true, token: d.token };
+    } catch {
+      return { ok: false, message: "backend unavailable" };
     }
-
-    function updateBadge() {
-      const seen = Number(sessionStorage.getItem(ACTIVITY_SEEN_KEY)||0);
-      const n = getActivities().filter(x => new Date(x.at||0).getTime() > seen).length;
-      badge.textContent = n > 99 ? "99+" : String(n);
-      badge.style.display = n > 0 ? "flex" : "none";
-    }
-    const markRead   = () => { sessionStorage.setItem(ACTIVITY_SEEN_KEY, String(Date.now())); updateBadge(); };
-    const openPanel  = () => { panel.classList.add("open"); overlay.classList.add("open"); renderPanel(); markRead(); };
-    const closePanel = () => { panel.classList.remove("open"); overlay.classList.remove("open"); };
-
-    bar.querySelector("#sv-bell-btn").addEventListener("click", e => { e.stopPropagation(); panel.classList.contains("open") ? closePanel() : openPanel(); });
-    overlay.addEventListener("click", closePanel);
-    panel.querySelector("#sv-np-read").addEventListener("click",  () => { markRead(); showToast("Барлық хабарлама оқылды", "success", 1800); });
-    panel.querySelector("#sv-np-clear").addEventListener("click", () => { clearActivities(); renderPanel(); markRead(); showToast("Хабарламалар тазаланды", "info", 1800); });
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") closePanel();
-      if ((e.ctrlKey||e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); bar.querySelector("#sv-tb-search").focus(); }
-    });
-
-    // Search
-    const PAGES = [
-      { kw:["бақылау","тақта","dashboard"],   href:"dashboard.html" },
-      { kw:["оқиға","инцидент","тарих"],      href:"incidents.html" },
-      { kw:["камера","video","бейне"],         href:"cameras.html" },
-      { kw:["баптау","setting"],              href:"settings.html" },
-      { kw:["профиль","profile"],             href:"profile.html" },
-      { kw:["пайдаланушы","users"],           href:"users.html" },
-      { kw:["әкімші","admin"],               href:"admin_dashboard.html" },
-    ];
-    bar.querySelector("#sv-tb-search").addEventListener("keydown", e => {
-      if (e.key !== "Enter") return;
-      const q = e.target.value.trim().toLowerCase();
-      const hit = PAGES.find(p => p.kw.some(k => k.includes(q) || q.includes(k)));
-      if (hit) window.location.href = hit.href;
-      else showToast("Бет табылмады", "warning");
-    });
-
-    updateBadge();
-    setInterval(() => { updateBadge(); if (panel.classList.contains("open")) renderPanel(); }, 5000);
-    window.addEventListener("storage", e => { if (e.key === ACTIVITY_KEY) { updateBadge(); if (panel.classList.contains("open")) renderPanel(); } });
   }
 
-  // ─────────────────────────────────────────────
-  // TOAST notification
-  // ─────────────────────────────────────────────
+  async function register(fullName, email, username, password) {
+    try {
+      const r = await fetch(API_BASE + "/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, username, password }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d?.ok) return { ok: false, message: d?.message || "Тіркелу мүмкін болмады" };
+      setToken(d.token || "");
+      setSessionUser(d.user || {});
+      await hydrateFromBackend();
+      return { ok: true, user: d.user };
+    } catch {
+      return { ok: false, message: "Серверге қосылу мүмкін болмады" };
+    }
+  }
+
+  // 7. TOAST notification
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
   function showToast(message, type = "info", duration = 3500) {
     let container = document.getElementById("sv-toast-container");
     if (!container) {
@@ -439,13 +514,290 @@
     }, duration);
   }
 
-  // ─────────────────────────────────────────────
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  // Page meta
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  const PAGE_META = {
+    "dashboard.html":       { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Бақылау тақтасы" }] },
+    "incidents.html":       { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Оқиғалар тарихы" }] },
+    "incident_detail.html": { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Оқиғалар тарихы", href: "incidents.html" }, { label: "Мәлімет" }] },
+    "cameras.html":         { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Камералар" }] },
+    "users.html":           { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Пайдаланушылар" }] },
+    "admin_dashboard.html": { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Әкімші панелі" }] },
+    "settings.html":        { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Баптаулар" }] },
+    "profile.html":         { crumbs: [{ label: "ҚауіпсіздікКөзі", href: "dashboard.html" }, { label: "Профиль" }] },
+  };
+  function getPageMeta() {
+    const f = (window.location.pathname || "").split("/").pop() || "";
+    return PAGE_META[f] || { crumbs: [{ label: "ҚауіпсіздікКөзі" }] };
+  }
+
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  // Global topbar (Student-PM style)
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  function injectGlobalTopbar() {
+    if (document.getElementById("sv-global-topbar")) return;
+    const path = (window.location.pathname || "").toLowerCase();
+    if (path.includes("login.html") || path.endsWith("/") || path.endsWith("/index.html")) return;
+
+    if (!document.querySelector('link[href*="Material+Symbols+Outlined"]')) {
+      const lnk = document.createElement("link");
+      lnk.rel = "stylesheet";
+      lnk.href = "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined";
+      document.head.appendChild(lnk);
+    }
+
+    if (!document.getElementById("sv-tb-style")) {
+      const st = document.createElement("style");
+      st.id = "sv-tb-style";
+      st.textContent = `
+        #sv-global-topbar {
+          position: sticky; top: 0; z-index: 900;
+          width: 100%; display: flex; align-items: center; gap: 12px;
+          background: #ffffff;
+          border-bottom: 1px solid #e8edf3;
+          padding: 0 20px; height: 48px; flex-shrink: 0; box-sizing: border-box;
+        }
+        .sv-bc { display:flex; align-items:center; gap:5px; font-size:13px; font-weight:500; color:#7a8fa6; white-space:nowrap; flex-shrink:0; }
+        .sv-bc a { color:#7a8fa6; text-decoration:none; transition:color .15s; }
+        .sv-bc a:hover { color:#1a6fc4; text-decoration:underline; }
+        .sv-bc-sep { color:#b8c8d8; font-size:13px; margin:0 1px; user-select:none; }
+        .sv-bc-cur { color:#1a2433; font-weight:700; font-size:13px; }
+        .sv-tb-flex { flex:1; min-width:8px; }
+        .sv-sw { position:relative; flex-shrink:0; }
+        .sv-si {
+          height:32px; width:min(36vw,300px); min-width:140px;
+          border:1px solid #cddaee; border-radius:8px;
+          padding:0 58px 0 30px; font-size:13px; color:#334155;
+          background:rgba(255,255,255,0.9); outline:none;
+          transition:border-color .18s,background .18s,box-shadow .18s; box-sizing:border-box;
+        }
+        .sv-si:focus { border-color:#1a6fc4; background:#fff; box-shadow:0 0 0 3px rgba(26,111,196,.12); }
+        .sv-si::placeholder { color:#9ab0c8; }
+        .sv-sico { position:absolute; left:7px; top:50%; transform:translateY(-50%); color:#9ab0c8; font-size:18px; pointer-events:none; }
+        .sv-sh {
+          position:absolute; right:8px; top:50%; transform:translateY(-50%);
+          font-size:10.5px; color:#9ab0c8; background:#eaf0f8;
+          border:1px solid #cddaee; border-radius:4px; padding:1px 5px; pointer-events:none; white-space:nowrap;
+        }
+        .sv-ib {
+          position:relative; width:32px; height:32px; border:none;
+          background:rgba(255,255,255,0.5); border-radius:8px;
+          display:flex; align-items:center; justify-content:center;
+          color:#3a5a80; cursor:pointer; flex-shrink:0; transition:background .15s,color .15s;
+        }
+        .sv-ib:hover { background:rgba(255,255,255,0.9); color:#1a6fc4; }
+        .sv-ib .material-symbols-outlined { font-size:20px; }
+        .sv-bdg {
+          position:absolute; top:2px; right:2px;
+          min-width:16px; height:16px; border-radius:999px;
+          background:#e03131; color:#fff; font-size:9.5px; font-weight:700;
+          display:flex; align-items:center; justify-content:center;
+          padding:0 3px; border:2px solid #f4f8ff; pointer-events:none;
+        }
+        .sv-av {
+          width:28px; height:28px; border-radius:50%;
+          background:linear-gradient(135deg,#1a6fc4,#42a5f5);
+          border:none; cursor:pointer;
+          display:flex; align-items:center; justify-content:center;
+          color:#fff; font-size:11px; font-weight:700;
+          flex-shrink:0; transition:opacity .15s;
+        }
+        .sv-av:hover { opacity:.85; }
+        #sv-np {
+          position:fixed; top:48px; right:0;
+          width:320px; height:calc(100vh - 48px);
+          background:#fff; border-left:1px solid #e8edf3;
+          box-shadow:-4px 0 20px rgba(15,23,42,.09);
+          display:flex; flex-direction:column; z-index:890;
+          transform:translateX(100%);
+          transition:transform .22s cubic-bezier(.4,0,.2,1); overflow:hidden;
+        }
+        #sv-np.sv-open { transform:translateX(0); }
+        .sv-nph {
+          display:flex; align-items:center; justify-content:space-between;
+          padding:14px 16px 12px; border-bottom:1px solid #eef2f7; flex-shrink:0;
+        }
+        .sv-npt { font-size:14px; font-weight:700; color:#1a2433; }
+        .sv-npa { display:flex; gap:6px; }
+        .sv-npb {
+          font-size:11px; font-weight:600; color:#6b7f96;
+          background:#f4f7fb; border:1px solid #dce4ed;
+          border-radius:6px; height:24px; padding:0 8px; cursor:pointer; transition:background .15s;
+        }
+        .sv-npb:hover { background:#e6eef8; color:#1a6fc4; }
+        .sv-npl { flex:1; overflow-y:auto; display:flex; flex-direction:column; }
+        .sv-npi {
+          display:flex; gap:10px; padding:11px 16px;
+          border-bottom:1px solid #f0f4f9; transition:background .12s; cursor:default;
+        }
+        .sv-npi:last-child { border-bottom:none; }
+        .sv-npi:hover { background:#f7faff; }
+        .sv-npic { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+        .sv-npic.info    { background:#eff6ff; color:#2563eb; }
+        .sv-npic.success { background:#ecfdf5; color:#16a34a; }
+        .sv-npic.warning { background:#fff7ed; color:#ea580c; }
+        .sv-npic.error   { background:#fef2f2; color:#dc2626; }
+        .sv-npib { min-width:0; flex:1; }
+        .sv-npit { font-size:12.5px; font-weight:700; color:#111827; line-height:1.3; }
+        .sv-npid { font-size:11.5px; color:#64748b; margin-top:2px; line-height:1.35; }
+        .sv-npim { font-size:10.5px; color:#94a3b8; margin-top:3px; }
+        .sv-npe  { padding:32px 16px; text-align:center; font-size:13px; color:#94a3b8; }
+        #sv-npo { display:none; position:fixed; inset:0; z-index:889; }
+        #sv-npo.sv-open { display:block; }
+        @media(max-width:640px){ .sv-si{width:100px;min-width:70px;} #sv-np{width:100vw;} }
+        @media print{ #sv-global-topbar,#sv-np{display:none!important;} }
+      `;
+      document.head.appendChild(st);
+    }
+
+    const meta = getPageMeta();
+    const bcHtml = meta.crumbs.map((c, i) => {
+      const last = i === meta.crumbs.length - 1;
+      const sep = i > 0 ? `<span class="sv-bc-sep">/</span>` : "";
+      return last
+        ? `${sep}<span class="sv-bc-cur">${c.label}</span>`
+        : `${sep}<a href="${c.href || "#"}">${c.label}</a>`;
+    }).join("");
+
+    const u = getSessionUser();
+    const ini = u ? (u.fullName || u.username || "?").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() : "?";
+
+    const bar = document.createElement("div");
+    bar.id = "sv-global-topbar";
+    bar.innerHTML = `
+      <div class="sv-bc">${bcHtml}</div>
+      <div class="sv-tb-flex"></div>
+      <div class="sv-sw">
+        <span class="material-symbols-outlined sv-sico">search</span>
+        <input id="svGSInput" class="sv-si" placeholder="Жылдам іздеу..." autocomplete="off" spellcheck="false"/>
+        <span class="sv-sh">Ctrl+K</span>
+      </div>
+      <button id="svBellBtn" class="sv-ib" title="Хабарламалар">
+        <span class="material-symbols-outlined">notifications</span>
+        <span id="svBellBadge" class="sv-bdg" style="display:none">0</span>
+      </button>
+      <button class="sv-av" title="${u ? (u.fullName || u.username) : ""}" onclick="window.location.href='profile.html'">${ini}</button>
+    `;
+
+    const overlay = document.createElement("div");
+    overlay.id = "sv-npo";
+    document.body.appendChild(overlay);
+
+    const panel = document.createElement("div");
+    panel.id = "sv-np";
+    panel.innerHTML = `
+      <div class="sv-nph">
+        <span class="sv-npt">Хабарламалар</span>
+        <div class="sv-npa">
+          <button id="svNpRead"  class="sv-npb">Барлығын оқу</button>
+          <button id="svNpClear" class="sv-npb">Тазалау</button>
+        </div>
+      </div>
+      <div id="svNpList" class="sv-npl"></div>
+    `;
+    document.body.appendChild(panel);
+
+    const mainEl = document.querySelector("main");
+    if (mainEl && mainEl.parentElement) {
+      const col = document.createElement("div");
+      col.style.cssText = "display:flex;flex-direction:column;flex:1;min-width:0;overflow:hidden;";
+      mainEl.parentElement.insertBefore(col, mainEl);
+      col.appendChild(bar);
+      col.appendChild(mainEl);
+    } else {
+      bar.style.cssText = "position:fixed;top:0;left:0;right:0;";
+      document.body.prepend(bar);
+    }
+
+    // Search
+    const input = bar.querySelector("#svGSInput");
+    const PAGES = [
+      { kw: ["бақылау","тақта","dashboard"], href: "dashboard.html" },
+      { kw: ["оқиға","инцидент","тарих"],    href: "incidents.html" },
+      { kw: ["камера","video"],              href: "cameras.html" },
+      { kw: ["баптау","setting"],            href: "settings.html" },
+      { kw: ["профиль","profile"],           href: "profile.html" },
+      { kw: ["пайдаланушы","users"],         href: "users.html" },
+      { kw: ["әкімші","admin"],              href: "admin_dashboard.html" },
+    ];
+    input.addEventListener("keydown", e => {
+      if (e.key !== "Enter") return;
+      const q = input.value.trim().toLowerCase();
+      const hit = PAGES.find(p => p.kw.some(k => k.includes(q) || q.includes(k)));
+      if (hit) window.location.href = hit.href;
+      else showToast("Бет табылмады", "warning");
+    });
+
+    // Notifications
+    const bellBtn  = bar.querySelector("#svBellBtn");
+    const badge    = bar.querySelector("#svBellBadge");
+    const list     = panel.querySelector("#svNpList");
+    const readBtn  = panel.querySelector("#svNpRead");
+    const clearBtn = panel.querySelector("#svNpClear");
+
+    const safe = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const ICON = { success:"check_circle", warning:"warning", error:"error", info:"notifications" };
+
+    const render = () => {
+      const items = getActivities().slice(0, 20);
+      if (!items.length) {
+        list.innerHTML = `<div class="sv-npe">Хабарламалар жоқ</div>`;
+        return;
+      }
+      list.innerHTML = items.map(x => `
+        <div class="sv-npi">
+          <div class="sv-npic ${x.level||"info"}">
+            <span class="material-symbols-outlined" style="font-size:15px">${ICON[x.level]||ICON.info}</span>
+          </div>
+          <div class="sv-npib">
+            <div class="sv-npit">${safe(x.title)}</div>
+            <div class="sv-npid">${safe(x.desc)}</div>
+            <div class="sv-npim">${relativeTime(x.at)}</div>
+          </div>
+        </div>`).join("");
+    };
+
+    const updateBadge = () => {
+      const seen = Number(sessionStorage.getItem(SEEN_KEY)||0);
+      const n = getActivities().filter(x => new Date(x.at||0).getTime() > seen).length;
+      badge.textContent = n > 99 ? "99+" : String(n);
+      badge.style.display = n > 0 ? "flex" : "none";
+    };
+    const markRead  = () => { sessionStorage.setItem(SEEN_KEY, String(Date.now())); updateBadge(); };
+    const openPanel = () => { panel.classList.add("sv-open"); overlay.classList.add("sv-open"); render(); markRead(); };
+    const closePanel= () => { panel.classList.remove("sv-open"); overlay.classList.remove("sv-open"); };
+
+    bellBtn.addEventListener("click", e => { e.stopPropagation(); panel.classList.contains("sv-open") ? closePanel() : openPanel(); });
+    overlay.addEventListener("click", closePanel);
+    readBtn.addEventListener("click",  () => { markRead(); showToast("Барлық хабарлама оқылды", "success", 1800); });
+    clearBtn.addEventListener("click", () => { clearActivities(); render(); markRead(); showToast("Хабарламалар тазаланды", "info", 1800); });
+    document.addEventListener("click",   e => { if (!panel.contains(e.target) && !bellBtn.contains(e.target)) closePanel(); });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closePanel();
+      if ((e.ctrlKey||e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); input.focus(); input.select(); }
+    });
+
+    updateBadge();
+    render();
+    setInterval(() => { updateBadge(); if (panel.classList.contains("sv-open")) render(); }, 5000);
+    window.addEventListener("storage", e => {
+      if (e.key === ACTIVITY_KEY || e.key === "sv_incidents") { updateBadge(); if (panel.classList.contains("sv-open")) render(); }
+    });
+  }
+
   // 8. DOMContentLoaded
-  // ─────────────────────────────────────────────
-  document.addEventListener("DOMContentLoaded", function () {
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+  document.addEventListener("DOMContentLoaded", async function () {
     initUsersIfEmpty();
     initIncidentsIfEmpty();
     initCamerasIfEmpty();
+    repairMojibakeData();
+    if ((window.location.pathname || "").toLowerCase().includes("cameras.html")) {
+      await hydrateFromBackend();
+    }
     checkAuth();
     applyRoleUI();
     initActivitiesIfEmpty();
@@ -455,15 +807,16 @@
     });
   });
 
-  // ─────────────────────────────────────────────
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
   // 9. Public API
-  // ─────────────────────────────────────────────
+  // в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
   window.SafetyVision = window.SafetyVision || {};
-  window.SafetyVision.auth = { login, logout, checkAuth, requireRole, getSessionUser, applyRoleUI, getUsers };
+  window.SafetyVision.auth = { login, logout, checkAuth, requireRole, getSessionUser, applyRoleUI, getUsers, authHeader, getToken, ensureBackendToken };
   window.SafetyVision.incidents = { getAll: getIncidents, add: addIncident, update: updateIncident, remove: deleteIncident };
-  window.SafetyVision.users = { getAll: getUsers, add: addUser, update: updateUser, remove: deleteUser };
-  window.SafetyVision.activities = { getAll: getActivities, add: addActivity, clear: clearActivities };
+  window.SafetyVision.users = { getAll: getUsers, add: addUser, update: updateUser, remove: deleteUser, changePassword };
   window.SafetyVision.toast = showToast;
   window.SafetyVision.fmt = fmt;
+  window.SafetyVision.activities = { getAll: getActivities, add: addActivity, clear: clearActivities, resetCleared: () => localStorage.removeItem("sv_activity_cleared") };
+  window.SafetyVision.notify = showToast;
 
 })();
